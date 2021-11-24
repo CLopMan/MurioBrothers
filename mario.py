@@ -1,6 +1,5 @@
 import pyxel
 
-
 class Mario:
     """personaje principal, conjunto de todos los parámetros necesiarios"""
 
