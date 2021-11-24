@@ -16,3 +16,8 @@ class Mario:
         # control de sprite
         self.sprite: list = [0, 0, 0, 16, 16]
 
+    def velocidad(self):
+        self.velocidad[0] = 2.5
+
+    def move(self):
+        self.position[0] *= 2.5
