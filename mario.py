@@ -19,5 +19,14 @@ class Mario:
     def velocidad(self):
         self.velocidad[0] = 2.5
 
-    def move(self):
-        self.position[0] *= 2.5
+    def moveDerecha(self):
+        self.position[0] += self.velocidad[0]
+
+    def moveizquierda(self):
+        self.position -= self.velocidad[0]
+
+    def parriba(self):
+        self.velocidad[1] += 2.5
+
+    def salto(self):
+        self.position[1] -= self.velocidad[1]
