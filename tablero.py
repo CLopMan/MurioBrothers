@@ -14,13 +14,14 @@ class Tablero:
         self.velocidad: float = velocidad
         self.interfaz: Interfaz = Interfaz(0, 999, 0, 1, 1, 3)
         # Lista de enemigos, de momento sólo he metido y colocado el primero
-        self.enemigos: list = [Enemigo(*constantes.ENEMIGOS[0])]
+        self.enemigos: list = [Enemigo(*constantes.ENEMIGOS_XY[0])]
         self.bloques: list = []
         self.mario: Mario = Mario(*constantes.posicion_inicial_mario)
 
     def inputs(self):
         """Recoge los distintos usuarios del jugador"""
         self.mario.set_velocidad()
+        self.mario.resetDir()
         if pyxel.btn(pyxel.KEY_LEFT):
             self.mario.moverIzquierda()
         if pyxel.btn(pyxel.KEY_RIGHT):
@@ -30,6 +31,8 @@ class Tablero:
 
     def update(self):
         self.mario.update()
+        self.enemigos[0].move()
+        self.enemigos[0].cuerpoTierra()
 
 
 

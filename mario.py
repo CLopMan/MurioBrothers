@@ -33,17 +33,22 @@ class Mario:
     # MOVIMIENTO HORIZONTAL
 
     def set_velocidad(self):
-        if self.velocidad[0] < 3:
-            self.velocidad[0] += self.aceleracion
-        elif self.velocidad[0] > 3:
-            self.velocidad[0] = 3
+        if self.direccion != 0:
+            if self.velocidad[0] < 3:
+                self.velocidad[0] += self.aceleracion
+            elif self.velocidad[0] > 3:
+                self.velocidad[0] = 3
 
     def moverDerecha(self):
+        self.direccion = 1
         self.position[0] += self.velocidad[0]
 
     def moverIzquierda(self):
+        self.direccion = -1
         self.position[0] -= self.velocidad[0]
 
+    def resetDir(self):
+        self.direccion = 0
     # MOVIMIENTO VERTICAL
 
     def gravedad(self):
@@ -73,10 +78,26 @@ class Mario:
         if self.__en_suelo or self.__frames_aire < 7:
             self.velocidad[1] -= 1.5
 
+    def animaciones(self):
+        if not self.__en_suelo:
+            self.sprite[1] = 48
+            self.sprite[2] = 0
+        else:
+            self.sprite[1] = 16
+            self.sprite[2] = 0
+
+            if self.direccion != 0:
+                a = pyxel.frame_count % (45 / (int(self.velocidad[0]) + 1))
+                if a // (15 / (int(self.velocidad[0]) + 1)) == 1:
+                    self.sprite[1] = 32
+                elif a // (15 / (int(self.velocidad[0]) + 1)) == 0:
+                    self.sprite[1] = 16
+
     def update(self):
         self.position[1] += self.velocidad[1]
         self.cuerpoTierra()
         self.gravedad()
+        self.animaciones()
 
     def draw(self):
         pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=0)
