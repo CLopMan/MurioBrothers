@@ -12,4 +12,5 @@ class Tablero:
         if pyxel.btn(pyxel.KEY_RIGHT):
             player.moveDerecha()
 
-
+    def draw(self):
+        pyxel.bltm(0,0, 0, 0, 0, 256, 256)

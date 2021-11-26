@@ -1,4 +1,6 @@
 import pyxel
+from tablero import Tablero
+tablero = (0,0)
 
 W = 256
 H = 256
@@ -10,6 +12,7 @@ def update():
 
 def draw():
     pyxel.cls(0)
+    pyxel.bltm(0,0, 0, 0, 32, 256, 256)
 
 
 pyxel.init(W, H, caption=CAPTION)
