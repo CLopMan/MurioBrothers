@@ -26,7 +26,7 @@ class Mario:
         if self.correr:
             return 0.6
         else:
-            return 0.25
+            return 0.1
 
 
 
@@ -79,14 +79,20 @@ class Mario:
             self.velocidad[1] -= 1.5
 
     def animaciones(self):
+        # si no está en el suelo ponme la skin de salto. Esto incluye si cae por un precipicio o una plataforma
         if not self.__en_suelo:
             self.sprite[1] = 48
             self.sprite[2] = 0
         else:
+            # si no pon la skin base
             self.sprite[1] = 16
             self.sprite[2] = 0
 
+            # si estamos en movimiento (esto harbría que cambiarlo según la dirección sea negativa o positiva para que
+            # mario mire hacia el lado que debe) cambiame la skin. Más rápido cuánto más rápido me mueva
             if self.direccion != 0:
+                """Tenemos un segmento de módulo 45, creado por frame count % 45. Al dividirlo entre 15 estamos creando
+                3 segmentos iguales de frames. Cada vez que cambie de segmento cambia de skin"""
                 a = pyxel.frame_count % (45 / (int(self.velocidad[0]) + 1))
                 if a // (15 / (int(self.velocidad[0]) + 1)) == 1:
                     self.sprite[1] = 32

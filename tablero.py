@@ -28,6 +28,10 @@ class Tablero:
             self.mario.moverDerecha()
         if pyxel.btn(pyxel.KEY_Z):
             self.mario.salto()
+        # pequeño debug para comprobar que el goomba cambia bien de dirección. Borrar en un futuro para que esto
+        # ocurra si se choca
+        if pyxel.btnp(pyxel.KEY_D):
+            self.enemigos[0].cambioDir()
 
     def update(self):
         self.mario.update()
