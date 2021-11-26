@@ -1,12 +1,11 @@
 import pyxel
 from tablero import Tablero
-from mario import Mario
-tablero = Tablero(0,0)
+import constantes
 
+tablero = Tablero(constantes.WIDTH, constantes.HEIGHT, constantes.VELOCIDAD, constantes.X)
 
-W = 256
-H = 256
 CAPTION = "MARIO BROSS"
+
 
 def update():
     if pyxel.btnp(pyxel.KEY_Q):
@@ -20,8 +19,7 @@ def draw():
     tablero.draw()
 
 
-
-pyxel.init(W, H, caption=CAPTION)
+pyxel.init(tablero.w, tablero.h, caption=CAPTION)
 
 pyxel.load("mario_assets.pyxres")
 
