@@ -12,23 +12,38 @@ class Tablero:
         # posición en x de la cámara
         self.x: float = x
         self.velocidad: float = velocidad
+
         self.interfaz: Interfaz = Interfaz(0, 999, 0, 1, 1, 3)
         # Lista de enemigos, de momento sólo he metido y colocado el primero
         self.enemigos: list = [Enemigo(*constantes.ENEMIGOS_XY[0])]
         self.bloques: list = []
-        self.mario: Mario = Mario(*constantes.posicion_inicial_mario)
+        self.mario: Mario = Mario(*constantes.POSICION_INICIAL_M)
+
+    def move(self):
+        """movimiento de la camara. Si mario llega al límite de la pantalla se queda inmovil y se mueve el mapa con
+        la misma velocidad"""
+        moverpx = 0
+        if self.mario.position[0] > 112:
+            self.mario.position[0] = 112
+            moverpx = self.mario.velocidad[0]
+        self.x -= moverpx
 
     def inputs(self):
-        """Recoge los distintos usuarios del jugador"""
+        """Recoge los distintas entradas del jugador"""
+        # direccion = 0
         self.mario.direccion_reset()
+        # correr
         if pyxel.btn(pyxel.KEY_X):
             self.mario.sprint()
         else:
             self.mario.notsprint()
+        # izquierda
         if pyxel.btn(pyxel.KEY_LEFT):
             self.mario.direccion_left()
+        # derecha
         if pyxel.btn(pyxel.KEY_RIGHT):
             self.mario.direccion_right()
+        # salto
         if pyxel.btn(pyxel.KEY_Z):
             self.mario.salto()
         # pequeño debug para comprobar que el goomba cambia bien de dirección. Borrar en un futuro para que esto
@@ -37,14 +52,16 @@ class Tablero:
             self.enemigos[0].cambioDir()
 
     def update(self):
+        """Ejecuta todas las interacciones entre objetos y el mapa"""
         self.mario.update()
+        self.move()
         self.enemigos[0].move()
         self.enemigos[0].cuerpoTierra()
 
 
 
     def draw(self):
-        pyxel.bltm(0,0, 0, 0, 32, 256, 256)
+        pyxel.bltm(self.x, 0, 0, 0, 32, 256, 256)
         self.interfaz.draw()
         self.mario.draw()
         self.enemigos[0].draw()

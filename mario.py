@@ -1,5 +1,7 @@
 import pyxel
 import constantes
+
+
 class Mario:
     """personaje principal, conjunto de todos los parámetros necesiarios"""
 
@@ -21,47 +23,56 @@ class Mario:
         # comprobación de que mario está en el suelo
         self.__en_suelo = True
 
-        # MOVIMIENTO
-        # constantes
+    # MOVIMIENTO
+
+    # Atributos de sólo lectura:
     @property
     def aceleracion(self):
         if self.correr:
-            return 0.6
+            return constantes.ACELERACION[1]
         else:
-            return 0.3
+            return constantes.ACELERACION[0]
 
     @property
     def acel_gravedad(self):
-        return 0.6
+        return constantes.GRAVEDAD
 
     @property
     def velocidad_limite(self):
         if self.correr:
-            return 3
+            return constantes.VELOCIDAD_LIMITE[1]
         else:
-            return 1.5
+            return constantes.VELOCIDAD_LIMITE[0]
 
     @property
     def rozamiento(self):
         if self.correr:
-            return 0.15
+            return constantes.ROZAMIENTO[1]
         else:
-            return 0.075
+            return constantes.ROZAMIENTO[0]
+
+    # Funciones del movimiento
 
     def sprint(self):
+        """Disparador de la función correr"""
         if self.__en_suelo:
             self.correr = True
 
     def notsprint(self):
+        """Desactivar correr"""
         self.correr = False
 
-    # métodos para direcciones
+    # métodos para direcciones. Se usan sumas para que puedas pulsar varios botones a la vez y te quedes quieto
     def direccion_right(self):
-        "varía la direccion a la derecha"
+        """Cambia la direccion hacia la derecha"""
+        # COMENTARIO TEMPORAL: Introducir aquí un bloque que cambie al sprite frenar hacia la izq si la velocidad
+        # es negativa a la hora de ejecutar esta función
         self.direccion += 1
 
     def direccion_left(self):
-        "varía la dirección a la izq"
+        """varía la dirección a la izquierda"""
+        # COMENTARIO TEMPORAL: Introducir aquí un bloque que cambie al sprite frenar hacia la derecha si la velocidad
+        # es positiva a la hora de ejecutar esta función
         self.direccion -= 1
 
     def direccion_reset(self):
@@ -87,10 +98,9 @@ class Mario:
             self.velocidad[0] = 0
 
     def movimiento(self):
-
+        """Funcion que actualiza la posición de mario en función de la velocidad"""
         self.position[0] += self.velocidad[0]
         self.position[1] += self.velocidad[1]
-
 
     def cuerpoTierra(self):
         """esta función controla que el jugador esté pisando el suelo, si no lo está pisando cuenta los frames que está
@@ -106,11 +116,14 @@ class Mario:
             self.position[1] = 208
         elif self.position[1] < 208:
             self.__en_suelo = False
+            # si se despega del suelo cuenta los frames que esté ne el aire
+            # (esto permite que si te acabas de caer de un bloque puedas saltar en el aire, facilitando en control)
+            self.__frames_aire += 1
 
     def gravedad(self):
+        """Aplica una aceleración hacia abajo si mario se despega del suelo"""
         if not self.__en_suelo:
             self.velocidad[1] += self.acel_gravedad
-            self.__frames_aire += 1
 
     def salto(self):
         """Establece una aceleración vertical durante un máximo de 7 frames en los que se mantenga pulsada la tecla
@@ -140,14 +153,18 @@ class Mario:
                     self.sprite[1] = 16"""
 
     def update(self):
+        """Ejecuta todas las funciones de mario en el orden adecuado para su funcionamiento"""
         self.acelerar()
         self.frenar()
         self.movimiento()
         self.gravedad()
         self.cuerpoTierra()
-        #self.animaciones()
+        # self.animaciones()
 
     def draw(self):
+        """Dibuja a mario"""
         pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=0)
-        pyxel.text(0, 15, "%s\n%s, %s\n%i\n%s\n%s" % (
-            self.position, self.velocidad[0], self.velocidad[1], self.__frames_aire, self.__en_suelo, self.sprite), 0)
+        # menú debug
+        if pyxel.btn(pyxel.KEY_Y):
+            pyxel.text(0, 15, "%s\n%s, %s\n%i\n%s\n%s" % (
+                self.position, self.velocidad[0], self.velocidad[1], self.__frames_aire, self.__en_suelo, self.sprite), 0)

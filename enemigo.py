@@ -5,8 +5,7 @@ import constantes
 
 class Enemigo:
     def __init__(self, x, y, tipo, sprite):
-        self.x = x
-        self.y = y
+        self.position = [x, y]
         self.velocidad = [0, 0]
         self.type = tipo
         self.sprite = sprite
@@ -28,12 +27,11 @@ class Enemigo:
         else:
             self.y = 208
 
-
-
     def draw(self):
-        pyxel.blt(self.x, self.y, *self.sprite, colkey=10)
+        pyxel.blt(self.position[0], self.y, *self.sprite, colkey=10)
 
     def move(self):
-        self.x += self.dir * constantes.VELOCIDAD_ENEMIGOS
+        self.position[0] += self.dir * constantes.VELOCIDAD_ENEMIGOS
+
     def cambioDir(self):
         self.dir *= -1
