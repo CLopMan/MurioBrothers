@@ -15,20 +15,20 @@ class Enemigo:
     def cuerpoTierra(self):
         """gravedad"""
         # temporalmente el suelo está en 208, si se pasa hacia abajo corrige el error
-        if self.y > 208:
+        if self.position[1] > 208:
             # velocidad vertical = 0
             self.velocidad[1] = 0
             # corrige la posición
-            self.y = 208
+            self.position[1] = 208
 
-        elif self.y < 206:
+        elif self.position[1] < 206:
             self.velocidad[1] += constantes.GRAVEDAD
-            self.y += self.velocidad[1]
+            self.position[1] += self.velocidad[1]
         else:
-            self.y = 208
+            self.position[1] = 208
 
     def draw(self):
-        pyxel.blt(self.position[0], self.y, *self.sprite, colkey=10)
+        pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=10)
 
     def move(self):
         self.position[0] += self.dir * constantes.VELOCIDAD_ENEMIGOS

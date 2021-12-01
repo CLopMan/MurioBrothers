@@ -99,7 +99,12 @@ class Mario:
 
     def movimiento(self):
         """Funcion que actualiza la posición de mario en función de la velocidad"""
-        self.position[0] += self.velocidad[0]
+        # comprobación del borde izquierdo
+        if self.position[0] > 0:
+            self.position[0] += self.velocidad[0]
+        else:
+            self.position[0] = 0.1
+            self.velocidad[0] = 0
         self.position[1] += self.velocidad[1]
 
     def cuerpoTierra(self):
