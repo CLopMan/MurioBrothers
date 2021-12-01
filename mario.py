@@ -15,7 +15,7 @@ class Mario:
         # sprintar
         self.correr = False
         # control de sprite
-        self.sprite: list = [0, 16, 0, 16, 16]
+        self.sprite: list = [0, 64, 16, 16, 16]
         # disparador de salto
         self.__saltar = False
         # contador de frames en el aire
@@ -65,14 +65,18 @@ class Mario:
     # métodos para direcciones. Se usan sumas para que puedas pulsar varios botones a la vez y te quedes quieto
     def direccion_right(self):
         """Cambia la direccion hacia la derecha"""
-        # COMENTARIO TEMPORAL: Introducir aquí un bloque que cambie al sprite frenar hacia la izq si la velocidad
-        # es negativa a la hora de ejecutar esta función
+        self.sprite[1] = 64
+        # sprite de frenado en caso de que vengamos de otra direccion
+        if self.velocidad[0] < 0:
+            self.sprite[2] = 0
         self.direccion += 1
 
     def direccion_left(self):
         """varía la dirección a la izquierda"""
-        # COMENTARIO TEMPORAL: Introducir aquí un bloque que cambie al sprite frenar hacia la derecha si la velocidad
-        # es positiva a la hora de ejecutar esta función
+        self.sprite[1] = 80
+        # sprite de frenado si venimos de la otra direccion
+        if self.velocidad[0] > 0:
+            self.sprite[2] = 0
         self.direccion -= 1
 
     def direccion_reset(self):
@@ -136,35 +140,32 @@ class Mario:
         if self.__en_suelo or self.__frames_aire < 7:
             self.velocidad[1] -= 1.5
 
-    """def animaciones(self):
-        # si no está en el suelo ponme la skin de salto. Esto incluye si cae por un precipicio o una plataforma
-        if not self.__en_suelo:
-            self.sprite[1] = 48
-            self.sprite[2] = 0
-        else:
-            # si no pon la skin base
-            self.sprite[1] = 16
-            self.sprite[2] = 0
-
-            # si estamos en movimiento (esto harbría que cambiarlo según la dirección sea negativa o positiva para que
-            # mario mire hacia el lado que debe) cambiame la skin. Más rápido cuánto más rápido me mueva
-            if self.direccion != 0:
-                Tenemos un segmento de módulo 45, creado por frame count % 45. Al dividirlo entre 15 estamos creando
-                3 segmentos iguales de frames. Cada vez que cambie de segmento cambia de skin
-                a = pyxel.frame_count % (45 / (int(self.velocidad[0]) + 1))
-                if a // (15 / (int(self.velocidad[0]) + 1)) == 1:
-                    self.sprite[1] = 32
-                elif a // (15 / (int(self.velocidad[0]) + 1)) == 0:
-                    self.sprite[1] = 16"""
+    def animacionCaminar(self):
+        """Controla los sprites de mario en los movimientos básicos, los sprites están organizados por columnas. Las
+        funciones de dirección establecen qué columna usamos y esta función define cual de las skins"""
+        # animación de caminar si está en el suelo y la dirección y el sentido de la velocidad coinciden. Si no
+        # coinciden significa que todavía se está ejecutando el freno activo (skin propia)
+        if self.__en_suelo and self.direccion * self.velocidad[0] >= 0:
+            self.sprite[2] = 16
+            if self.velocidad[0] != 0:
+                # cada periodo de 5 frames cambia de sprite
+                if pyxel.frame_count % 10 < 5:
+                    self.sprite[2] = 32
+            # parado
+            else:
+                self.sprite[2] = 16
+        # si está en el aire salta
+        elif not self.__en_suelo:
+            self.sprite[2] = 48
 
     def update(self):
         """Ejecuta todas las funciones de mario en el orden adecuado para su funcionamiento"""
         self.acelerar()
         self.frenar()
+        self.animacionCaminar()
         self.movimiento()
         self.gravedad()
         self.cuerpoTierra()
-        # self.animaciones()
 
     def draw(self):
         """Dibuja a mario"""

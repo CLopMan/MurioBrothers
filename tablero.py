@@ -3,6 +3,7 @@ import constantes
 from interfaz import Interfaz
 from mario import Mario
 from enemigo import Enemigo
+from bloque import Bloque
 
 
 class Tablero:
@@ -17,6 +18,8 @@ class Tablero:
         # Lista de enemigos, de momento sólo he metido y colocado el primero
         self.enemigos: list = [Enemigo(*constantes.ENEMIGOS_XY[0])]
         self.bloques: list = []
+        for _ in constantes.POSICION_BLOQUES:
+            self.bloques.append(Bloque(*_))
         self.mario: Mario = Mario(*constantes.POSICION_INICIAL_M)
 
     def move(self):
@@ -27,6 +30,10 @@ class Tablero:
             self.mario.position[0] = 112
             moverpx = self.mario.velocidad[0]
         self.x -= moverpx
+        # si se mueve el escenario también se mueven los bloques
+        for bloque in (self.bloques):
+            bloque.move(moverpx)
+
 
     def inputs(self):
         """Recoge los distintas entradas del jugador"""
@@ -60,11 +67,10 @@ class Tablero:
 
     def draw(self):
         pyxel.bltm(self.x, 0, 0, 0, 32, 256, 256)
-        pyxel.text(60, 0, str(self.mario.position), 7)
         self.interfaz.draw()
         self.mario.draw()
         self.enemigos[0].draw()
+        pyxel.text(122,5,str(self.x), 7)
         # Bucle que dibuja los bloques rompibles (no fijarse en el tilemap- es una ref más o menos exacta del og)
-        for i in range(len(constantes.POSICION_BLOQUES)):
-            pyxel.blt(constantes.POSICION_BLOQUES[i][0] * 8 + self.x, constantes.POSICION_BLOQUES[i][1], 0, 32,
-                      16, 16, 16)
+        for bloque in self.bloques:
+            bloque.draw()
