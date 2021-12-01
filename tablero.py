@@ -58,12 +58,13 @@ class Tablero:
         self.enemigos[0].move()
         self.enemigos[0].cuerpoTierra()
 
-
-
     def draw(self):
         pyxel.bltm(self.x, 0, 0, 0, 32, 256, 256)
+        pyxel.text(60, 0, str(self.mario.position), 7)
         self.interfaz.draw()
         self.mario.draw()
         self.enemigos[0].draw()
         # Mirar. Bucle que dibuja los bloques pero está jodido
-        # for i in constantes.POSICION_BLOQUES:
+        for i in range(len(constantes.POSICION_BLOQUES)):
+            pyxel.blt(constantes.POSICION_BLOQUES[i][0] * 8 + self.x, constantes.POSICION_BLOQUES[i][1] + 122, 0, 32,
+                      16, 16, 16)
