@@ -65,3 +65,5 @@ class Tablero:
         self.interfaz.draw()
         self.mario.draw()
         self.enemigos[0].draw()
+        # Mirar. Bucle que dibuja los bloques pero está jodido
+        # for i in constantes.POSICION_BLOQUES:

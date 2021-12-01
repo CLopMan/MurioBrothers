@@ -17,6 +17,7 @@ def draw():
     pyxel.cls(0)
     tablero.draw()
 
+
 # Título de la ventana
 CAPTION = "MARIO BROSS"
 

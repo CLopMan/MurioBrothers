@@ -14,21 +14,22 @@ VELOCIDAD_ENEMIGOS = 0.5
 # ==MARIO==
 POSICION_INICIAL_M = [5, 208]
 # Para los dos siguientes parámentros el valor 0 corresponde con andar y el 1 con correr
-ACELERACION = (0.3, 0.6)
-VELOCIDAD_LIMITE = (3, 6)
-ROZAMIENTO = (0.075, 0.15)
-
+ACELERACION = (0.25, 0.5)
+VELOCIDAD_LIMITE = (2.5, 5)
+ROZAMIENTO = (0.125, 0.25)
 
 # ==OBSTACULOS==
-POSICION_BLOQUES = ((184, 184), (284, 200), (384, 160))
+POSICION_BLOQUES = (
+(46, 54), (50, 54), (54, 54), (140, 53), (144, 53), (146, 46), (148, 46), (150, 46), (152, 46), (154, 46),
+(156, 46), (160, 46), (162, 46), (176, 53), (190, 53), (192, 53))
 SPRITE_BLOQUE = (0, 32, 16, 16, 16)
-SPRITE_LISO= (0, 48, 16, 16, 16)
+POSICION_LISO = ([0, 0])
+SPRITE_LISO = (0, 48, 16, 16, 16)
 SPRITE_DIAMANTE = (0, 16, 32, 16, 16)
 SPRITE_TUBERIA = (0, 0, 80, 26, 31)
 
 # ==Generales==
 GRAVEDAD = 0.6
-
 
 # hitbox = (16, 16)
 # hitbox_mario_grande = (16, 32)
