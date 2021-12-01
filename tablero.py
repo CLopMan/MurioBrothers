@@ -64,7 +64,7 @@ class Tablero:
         self.interfaz.draw()
         self.mario.draw()
         self.enemigos[0].draw()
-        # Mirar. Bucle que dibuja los bloques pero está jodido
+        # Bucle que dibuja los bloques rompibles (no fijarse en el tilemap- es una ref más o menos exacta del og)
         for i in range(len(constantes.POSICION_BLOQUES)):
-            pyxel.blt(constantes.POSICION_BLOQUES[i][0] * 8 + self.x, constantes.POSICION_BLOQUES[i][1] + 122, 0, 32,
+            pyxel.blt(constantes.POSICION_BLOQUES[i][0] * 8 + self.x, constantes.POSICION_BLOQUES[i][1], 0, 32,
                       16, 16, 16)
