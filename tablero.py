@@ -20,12 +20,15 @@ class Tablero:
 
     def inputs(self):
         """Recoge los distintos usuarios del jugador"""
-        self.mario.set_velocidad()
-        self.mario.resetDir()
+        self.mario.direccion_reset()
+        if pyxel.btn(pyxel.KEY_X):
+            self.mario.sprint()
+        else:
+            self.mario.notsprint()
         if pyxel.btn(pyxel.KEY_LEFT):
-            self.mario.moverIzquierda()
+            self.mario.direccion_left()
         if pyxel.btn(pyxel.KEY_RIGHT):
-            self.mario.moverDerecha()
+            self.mario.direccion_right()
         if pyxel.btn(pyxel.KEY_Z):
             self.mario.salto()
         # pequeño debug para comprobar que el goomba cambia bien de dirección. Borrar en un futuro para que esto

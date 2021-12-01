@@ -21,41 +21,76 @@ class Mario:
         # comprobación de que mario está en el suelo
         self.__en_suelo = True
 
+        # MOVIMIENTO
+        # constantes
     @property
     def aceleracion(self):
         if self.correr:
             return 0.6
         else:
-            return 0.1
+            return 0.3
 
+    @property
+    def acel_gravedad(self):
+        return 0.6
 
+    @property
+    def velocidad_limite(self):
+        if self.correr:
+            return 3
+        else:
+            return 1.5
 
-    # MOVIMIENTO HORIZONTAL
+    @property
+    def rozamiento(self):
+        if self.correr:
+            return 0.15
+        else:
+            return 0.075
 
-    def set_velocidad(self):
-        if self.direccion != 0:
-            if self.velocidad[0] < 3:
-                self.velocidad[0] += self.aceleracion
-            elif self.velocidad[0] > 3:
-                self.velocidad[0] = 3
+    def sprint(self):
+        if self.__en_suelo:
+            self.correr = True
 
-    def moverDerecha(self):
-        self.direccion = 1
-        self.position[0] += self.velocidad[0]
+    def notsprint(self):
+        self.correr = False
 
-    def moverIzquierda(self):
-        self.direccion = -1
-        self.position[0] -= self.velocidad[0]
+    # métodos para direcciones
+    def direccion_right(self):
+        "varía la direccion a la derecha"
+        self.direccion += 1
 
-    def resetDir(self):
+    def direccion_left(self):
+        "varía la dirección a la izq"
+        self.direccion -= 1
+
+    def direccion_reset(self):
+        """resetea la dirección a 0"""
         self.direccion = 0
-    # MOVIMIENTO VERTICAL
 
-    def gravedad(self):
-        """establece una aceleración hacia abajo del personaje siempre que este se despegue del suelo"""
-        if not self.__en_suelo:
-            self.velocidad[1] += constantes.GRAVEDAD
-            self.__frames_aire += 1
+    def acelerar(self):
+        """Varía la velocidad del jugador hasta un límite de 3px/s en la dirección especificada por el input"""
+        # si la dirección es 0 significa que no hay input
+        if self.direccion != 0 and abs(self.velocidad[0]) <= self.velocidad_limite:
+            self.velocidad[0] += self.direccion * self.aceleracion
+
+    def frenar(self):
+        """aplica una fuerza de rozamiento sobre el jugador"""
+        # si se mueve hacia la derecha
+        if self.velocidad[0] > self.rozamiento:
+            self.velocidad[0] -= self.rozamiento
+        # si se mueve hacial a izquierda
+        elif self.velocidad[0] < -1 * self.rozamiento:
+            self.velocidad[0] += self.rozamiento
+        # evitar errores decimales en el cerca del 0
+        else:
+            self.velocidad[0] = 0
+
+    def movimiento(self):
+
+        self.position[0] += self.velocidad[0]
+        self.position[1] += self.velocidad[1]
+
 
     def cuerpoTierra(self):
         """esta función controla que el jugador esté pisando el suelo, si no lo está pisando cuenta los frames que está
@@ -72,13 +107,18 @@ class Mario:
         elif self.position[1] < 208:
             self.__en_suelo = False
 
+    def gravedad(self):
+        if not self.__en_suelo:
+            self.velocidad[1] += self.acel_gravedad
+            self.__frames_aire += 1
+
     def salto(self):
         """Establece una aceleración vertical durante un máximo de 7 frames en los que se mantenga pulsada la tecla
         correspondiente. Con esto permitimos que haya 7 alturas de salto dependiendo de cuánto se pulso el botón"""
         if self.__en_suelo or self.__frames_aire < 7:
             self.velocidad[1] -= 1.5
 
-    def animaciones(self):
+    """def animaciones(self):
         # si no está en el suelo ponme la skin de salto. Esto incluye si cae por un precipicio o una plataforma
         if not self.__en_suelo:
             self.sprite[1] = 48
@@ -91,19 +131,21 @@ class Mario:
             # si estamos en movimiento (esto harbría que cambiarlo según la dirección sea negativa o positiva para que
             # mario mire hacia el lado que debe) cambiame la skin. Más rápido cuánto más rápido me mueva
             if self.direccion != 0:
-                """Tenemos un segmento de módulo 45, creado por frame count % 45. Al dividirlo entre 15 estamos creando
-                3 segmentos iguales de frames. Cada vez que cambie de segmento cambia de skin"""
+                Tenemos un segmento de módulo 45, creado por frame count % 45. Al dividirlo entre 15 estamos creando
+                3 segmentos iguales de frames. Cada vez que cambie de segmento cambia de skin
                 a = pyxel.frame_count % (45 / (int(self.velocidad[0]) + 1))
                 if a // (15 / (int(self.velocidad[0]) + 1)) == 1:
                     self.sprite[1] = 32
                 elif a // (15 / (int(self.velocidad[0]) + 1)) == 0:
-                    self.sprite[1] = 16
+                    self.sprite[1] = 16"""
 
     def update(self):
-        self.position[1] += self.velocidad[1]
-        self.cuerpoTierra()
+        self.acelerar()
+        self.frenar()
+        self.movimiento()
         self.gravedad()
-        self.animaciones()
+        self.cuerpoTierra()
+        #self.animaciones()
 
     def draw(self):
         pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=0)
