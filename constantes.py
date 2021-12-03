@@ -8,11 +8,11 @@ VELOCIDAD = 0
 # ==ENEMIGOS==
 SPRITE_GOOMBA = (0, 0, 48, 16, 16)
 SPRITE_KOOPA = (0, 0, 48, 16, 16)
-ENEMIGOS_XY = ((72, 144, "gomba", SPRITE_GOOMBA),)
+ENEMIGOS_XY = ((72, 144, 208, SPRITE_GOOMBA),)
 VELOCIDAD_ENEMIGOS = 0.5
 
 # ==MARIO==
-POSICION_INICIAL_M = [5, 208]
+POSICION_INICIAL_M = (5, 208, 208, [16, 16], [0, 64, 16, 16, 16])
 # Para los dos siguientes parámentros el valor 0 corresponde con andar y el 1 con correr
 ACELERACION = (0.25, 0.5)
 VELOCIDAD_LIMITE = (2.5, 5)

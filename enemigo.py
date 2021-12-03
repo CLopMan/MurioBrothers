@@ -2,15 +2,16 @@ import pyxel
 
 import constantes
 
+from entidad import Entidad
 
-class Enemigo:
-    def __init__(self, x, y, tipo, sprite):
+class Enemigo():
+    def __init__(self, x, y, suelo, sprite):
         self.position = [x, y]
-        self.velocidad = [0, 0]
-        self.type = tipo
+        self.suelo = suelo
         self.sprite = sprite
+        self.velocidad = [0, 0]
         # dirección
-        self.dir = -1
+        self.direccion = -1
 
     def cuerpoTierra(self):
         """gravedad"""
@@ -31,7 +32,7 @@ class Enemigo:
         pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=10)
 
     def move(self):
-        self.position[0] += self.dir * constantes.VELOCIDAD_ENEMIGOS
+        self.position[0] += self.direccion * constantes.VELOCIDAD_ENEMIGOS
 
     def cambioDir(self):
-        self.dir *= -1
+        self.direccion *= -1

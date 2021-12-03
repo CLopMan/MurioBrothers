@@ -64,6 +64,8 @@ class Tablero:
         self.move()
         self.enemigos[0].move()
         self.enemigos[0].cuerpoTierra()
+        for bloque in self.bloques:
+            bloque.colision(self.mario)
 
     def draw(self):
         pyxel.bltm(self.x, 0, 0, 0, 32, 256, 256)

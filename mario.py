@@ -1,11 +1,17 @@
 import pyxel
 import constantes
 
-
-class Mario:
+class Mario():
     """personaje principal, conjunto de todos los parámetros necesiarios"""
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, suelo, size, sprite):
+        # super().__init__(x, y, suelo, sprite)
+        # Suelo de Mario
+        self.suelo = suelo
+        # ancho y alto
+        self.size = size
+        # sprite de mario
+        self.sprite = sprite
         # posición x e y
         self.position: list = [x, y]
         # velocidad en x e y
@@ -111,6 +117,12 @@ class Mario:
             self.velocidad[0] = 0
         self.position[1] += self.velocidad[1]
 
+    def conteoFrames(self):
+        if not self.__en_suelo:
+            self.__frames_aire += 1
+        else:
+            self.__frames_aire = 0
+
     def cuerpoTierra(self):
         """esta función controla que el jugador esté pisando el suelo, si no lo está pisando cuenta los frames que está
         en el aire"""
@@ -118,7 +130,6 @@ class Mario:
         if self.position[1] > 208:
             self.__en_suelo = True
             # resetea el valor de frames en el aire
-            self.__frames_aire = 0
             # velocidad vertical = 0
             self.velocidad[1] = 0
             # corrige la posición
@@ -126,8 +137,6 @@ class Mario:
         elif self.position[1] < 208:
             self.__en_suelo = False
             # si se despega del suelo cuenta los frames que esté ne el aire
-            # (esto permite que si te acabas de caer de un bloque puedas saltar en el aire, facilitando en control)
-            self.__frames_aire += 1
 
     def gravedad(self):
         """Aplica una aceleración hacia abajo si mario se despega del suelo"""
@@ -162,6 +171,7 @@ class Mario:
         """Ejecuta todas las funciones de mario en el orden adecuado para su funcionamiento"""
         self.acelerar()
         self.frenar()
+        self.conteoFrames()
         self.animacionCaminar()
         self.movimiento()
         self.gravedad()
@@ -171,6 +181,5 @@ class Mario:
         """Dibuja a mario"""
         pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=0)
         # menú debug
-        if pyxel.btn(pyxel.KEY_Y):
-            pyxel.text(0, 15, "%s\n%s, %s\n%i\n%s\n%s" % (
-                self.position, self.velocidad[0], self.velocidad[1], self.__frames_aire, self.__en_suelo, self.sprite), 0)
+        pyxel.text(0, 15, "%s\n%s, %s\n%i\n%s\n%s" % (
+            self.position, self.velocidad[0], self.velocidad[1], self.__frames_aire, self.__en_suelo, self.sprite), 0)
