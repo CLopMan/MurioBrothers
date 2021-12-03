@@ -34,7 +34,6 @@ class Tablero:
         for bloque in (self.bloques):
             bloque.move(moverpx)
 
-
     def inputs(self):
         """Recoge los distintas entradas del jugador"""
         # direccion = 0
@@ -66,6 +65,8 @@ class Tablero:
         self.enemigos[0].cuerpoTierra()
         for bloque in self.bloques:
             bloque.colision(self.mario)
+            self.mario.colisionBloque(bloque.colision2(self.mario))
+        self.mario.clearAlturas()
 
     def draw(self):
         pyxel.bltm(self.x, 0, 0, 0, 32, 256, 256)

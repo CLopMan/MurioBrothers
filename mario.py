@@ -28,6 +28,8 @@ class Mario():
         self.__frames_aire = 0
         # comprobación de que mario está en el suelo
         self.__en_suelo = True
+        # Posibles suelos de mario
+        self.trues_alturas = list()
 
     # MOVIMIENTO
 
@@ -127,14 +129,14 @@ class Mario():
         """esta función controla que el jugador esté pisando el suelo, si no lo está pisando cuenta los frames que está
         en el aire"""
         # temporalmente el suelo está en 208, si se pasa hacia abajo corrige el error
-        if self.position[1] > 208:
+        if self.position[1] > self.suelo:
             self.__en_suelo = True
             # resetea el valor de frames en el aire
             # velocidad vertical = 0
             self.velocidad[1] = 0
             # corrige la posición
-            self.position[1] = 208
-        elif self.position[1] < 208:
+            self.position[1] = self.suelo
+        elif self.position[1] < self.suelo:
             self.__en_suelo = False
             # si se despega del suelo cuenta los frames que esté ne el aire
 
@@ -183,3 +185,31 @@ class Mario():
         # menú debug
         pyxel.text(0, 15, "%s\n%s, %s\n%i\n%s\n%s" % (
             self.position, self.velocidad[0], self.velocidad[1], self.__frames_aire, self.__en_suelo, self.sprite), 0)
+    def clearAlturas(self):
+        self.trues_alturas = list()
+
+    def colisionBloque(self, boolList: list):
+        """esta función recibe la lista de booleanos de la función colisión de los bloques y actúa en consecuencia"""
+        # COLISIÓN VERTICAL POR ARRIBA
+        # inmediatamente encima
+        if boolList[1] and boolList[2]:
+            if boolList[3] not in self.trues_alturas:
+                self.trues_alturas.append(boolList[3])
+        # derecha
+        if (not boolList[0] and not boolList[1]):
+            self.clearAlturas()
+            self.suelo = 208
+        # izquierda (se ponen derecha e izquierda por separado para que no interactúen mal entre bloques)
+        elif boolList[0]:
+            self.suelo = 208
+
+        # En caso de que haya varias alturas posibles, cogemos la más cercana a mario
+        if len(self.trues_alturas) > 0:
+            min = self.position[1]
+            salida = 0
+            # para todas las alturas, saca la más cercana a mario
+            for ii in range(len(self.trues_alturas)):
+                if min > abs(self.trues_alturas[ii] - self.position[1]):
+                    salida = ii
+                    min = abs(boolList[3] - self.position[1])
+            self.suelo = self.trues_alturas[salida]
