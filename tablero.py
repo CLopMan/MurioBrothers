@@ -65,9 +65,10 @@ class Tablero:
         self.enemigos[0].cuerpoTierra()
         for bloque in self.bloques:
             bloque.colision(self.mario)
-            self.mario.colisionLados(bloque.colision2(self.mario))
+            #self.mario.colisionLados(bloque.colision2(self.mario))
             self.mario.colisionBloque(bloque.colision2(self.mario))
         self.mario.clearAlturas()
+        print(self.mario.velocidad)
 
     def draw(self):
         pyxel.bltm(self.x, 0, 0, 0, 32, 256, 256)

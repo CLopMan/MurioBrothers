@@ -208,6 +208,12 @@ class Mario():
         elif boolList[0]:
             self.suelo = 208
 
+        # COLISIÓN IZQUIERDA
+        if boolList[1] and (not boolList[2] and not boolList[3]):
+            if 0 < boolList[5] - self.position[0] < 16:
+                self.velocidad[0] = 0
+                self.position[0] = boolList[5] - 16
+
         # En caso de que haya varias alturas posibles, cogemos la más cercana a mario
         if len(self.trues_alturas) > 0:
             min = self.position[1]
@@ -219,7 +225,8 @@ class Mario():
                     min = abs(boolList[4] - self.position[1])
             self.suelo = self.trues_alturas[salida]
 
-    def colisionLados(self, boolList: list):
-        if boolList[0] and not boolList[2] and not boolList[3]:
-            if boolList[5] - self.position[0] <= 16:
-                self.velocidad[0]
+    """def colisionLados(self, boolList: list):
+        if boolList[1] and (not boolList[2] and not boolList[3]):
+            if boolList[5] - self.position[0] < 16:
+                self.velocidad[0] = 0
+                self.position[0] = boolList[5] - 16"""
