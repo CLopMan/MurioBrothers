@@ -197,6 +197,7 @@ class Mario():
         """esta función recibe la lista de booleanos de la función colisión de los bloques y actúa en consecuencia"""
         # COLISIÓN VERTICAL POR ARRIBA
         # inmediatamente encima
+        control = True
         if boolList[1] and boolList[2]:
             if boolList[4] not in self.trues_alturas:
                 self.trues_alturas.append(boolList[4])
@@ -207,12 +208,6 @@ class Mario():
         # izquierda (se ponen derecha e izquierda por separado para que no interactúen mal entre bloques)
         elif boolList[0]:
             self.suelo = 208
-
-        # COLISIÓN IZQUIERDA
-        if boolList[1] and (not boolList[2] and not boolList[3]):
-            if 0 < boolList[5] - self.position[0] < 16:
-                self.velocidad[0] = 0
-                self.position[0] = boolList[5] - 16
 
         # En caso de que haya varias alturas posibles, cogemos la más cercana a mario
         if len(self.trues_alturas) > 0:
@@ -225,8 +220,22 @@ class Mario():
                     min = abs(boolList[4] - self.position[1])
             self.suelo = self.trues_alturas[salida]
 
-    """def colisionLados(self, boolList: list):
-        if boolList[1] and (not boolList[2] and not boolList[3]):
-            if boolList[5] - self.position[0] < 16:
-                self.velocidad[0] = 0
-                self.position[0] = boolList[5] - 16"""
+        # debajo (si está inmediatamente debajo)
+        if boolList[1]:
+            if self.velocidad[1] < 0 and 0 > (boolList[4] - self.position[1]) > -16:
+                self.velocidad[1] = 0
+                self.position[1] = boolList[4] + 16
+                control = False
+        # COLISIÓN LATERAL
+        if control:
+            if boolList[1] and (not boolList[2] and not boolList[3]):
+                # colisión derecha
+                if -16 < boolList[5] - self.position[0] < 0:
+                    # Te mueve a la derecha
+                    self.velocidad[0] = 0
+                    self.position[0] = boolList[5] + 16
+                # colisión izquierda
+                elif 0 < boolList[5] - self.position[0] < 16:
+                    # Te mueve a la izquierda
+                    self.velocidad[0] = 0
+                    self.position[0] = boolList[5] - 16
