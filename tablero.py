@@ -65,6 +65,7 @@ class Tablero:
         self.enemigos[0].cuerpoTierra()
         for bloque in self.bloques:
             bloque.colision(self.mario)
+            self.mario.colisionLados(bloque.colision2(self.mario))
             self.mario.colisionBloque(bloque.colision2(self.mario))
         self.mario.clearAlturas()
 
@@ -73,7 +74,7 @@ class Tablero:
         self.interfaz.draw()
         self.mario.draw()
         self.enemigos[0].draw()
-        pyxel.text(122,5,str(self.x), 7)
+        pyxel.text(122, 5, str(self.x), 7)
         # Bucle que dibuja los bloques rompibles (no fijarse en el tilemap- es una ref más o menos exacta del og)
         for bloque in self.bloques:
             bloque.draw()

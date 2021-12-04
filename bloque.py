@@ -34,7 +34,7 @@ class Bloque():
 
     def colision2(self, other):
         """Función para comprobar la posición de mario o un enemigo con respecto de un bloque"""
-        aux = [False, False, False, 208]
+        aux = [False, False, False, False, 208, self.x]
         # Other está a la izquierda
         if self.x - other.position[0] >= 16:
             aux[0] = True
@@ -45,11 +45,11 @@ class Bloque():
         # Other está encima
         if self.y - other.position[1] >= 16:
             aux[2] = True
-            aux[3] = self.y - other.size[1]
-
-
-        """
-        Combinaciones:
+            aux[4] = self.y - other.size[1]
+        elif self.y - other.position[1] <= -16:
+            aux[3] = True
+        print(aux[5])
+        """Combinaciones:
         False, False, False -> derecha y debajo
         False, False, True -> derecha y encima
         False, True, True -> Inmediatamente encima

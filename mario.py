@@ -1,6 +1,7 @@
 import pyxel
 import constantes
 
+
 class Mario():
     """personaje principal, conjunto de todos los parámetros necesiarios"""
 
@@ -185,18 +186,22 @@ class Mario():
         # menú debug
         pyxel.text(0, 15, "%s\n%s, %s\n%i\n%s\n%s" % (
             self.position, self.velocidad[0], self.velocidad[1], self.__frames_aire, self.__en_suelo, self.sprite), 0)
+
     def clearAlturas(self):
         self.trues_alturas = list()
+
+    def clearAncho(self):
+        self.trues_anchos = list()
 
     def colisionBloque(self, boolList: list):
         """esta función recibe la lista de booleanos de la función colisión de los bloques y actúa en consecuencia"""
         # COLISIÓN VERTICAL POR ARRIBA
         # inmediatamente encima
         if boolList[1] and boolList[2]:
-            if boolList[3] not in self.trues_alturas:
-                self.trues_alturas.append(boolList[3])
+            if boolList[4] not in self.trues_alturas:
+                self.trues_alturas.append(boolList[4])
         # derecha
-        if (not boolList[0] and not boolList[1]):
+        if not boolList[0] and not boolList[1]:
             self.clearAlturas()
             self.suelo = 208
         # izquierda (se ponen derecha e izquierda por separado para que no interactúen mal entre bloques)
@@ -211,5 +216,10 @@ class Mario():
             for ii in range(len(self.trues_alturas)):
                 if min > abs(self.trues_alturas[ii] - self.position[1]):
                     salida = ii
-                    min = abs(boolList[3] - self.position[1])
+                    min = abs(boolList[4] - self.position[1])
             self.suelo = self.trues_alturas[salida]
+
+    def colisionLados(self, boolList: list):
+        if boolList[0] and not boolList[2] and not boolList[3]:
+            if boolList[5] - self.position[0] <= 16:
+                self.velocidad[0]
