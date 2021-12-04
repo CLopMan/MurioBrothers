@@ -113,14 +113,18 @@ class Mario():
     def movimiento(self):
         """Funcion que actualiza la posición de mario en función de la velocidad"""
         # comprobación del borde izquierdo
-        if self.position[0] > 0:
+        if 240 >= self.position[0] > 0:
             self.position[0] += self.velocidad[0]
+        elif self.position[0] > 240:
+            self.position[0] = 240
+            self.velocidad[0] = 0
         else:
             self.position[0] = 0.1
             self.velocidad[0] = 0
         self.position[1] += self.velocidad[1]
 
     def conteoFrames(self):
+        """Cuenta los frames que mario ha estado en el aire"""
         if not self.__en_suelo:
             self.__frames_aire += 1
         else:
@@ -149,8 +153,8 @@ class Mario():
     def salto(self):
         """Establece una aceleración vertical durante un máximo de 7 frames en los que se mantenga pulsada la tecla
         correspondiente. Con esto permitimos que haya 7 alturas de salto dependiendo de cuánto se pulso el botón"""
-        if self.__en_suelo or self.__frames_aire < 7:
-            self.velocidad[1] -= 1.5
+        if self.__en_suelo or self.__frames_aire < 4:
+            self.velocidad[1] -= 2
 
     def animacionCaminar(self):
         """Controla los sprites de mario en los movimientos básicos, los sprites están organizados por columnas. Las
@@ -170,28 +174,9 @@ class Mario():
         elif not self.__en_suelo:
             self.sprite[2] = 48
 
-    def update(self):
-        """Ejecuta todas las funciones de mario en el orden adecuado para su funcionamiento"""
-        self.acelerar()
-        self.frenar()
-        self.conteoFrames()
-        self.animacionCaminar()
-        self.movimiento()
-        self.gravedad()
-        self.cuerpoTierra()
-
-    def draw(self):
-        """Dibuja a mario"""
-        pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=0)
-        # menú debug
-        pyxel.text(0, 15, "%s\n%s, %s\n%i\n%s\n%s" % (
-            self.position, self.velocidad[0], self.velocidad[1], self.__frames_aire, self.__en_suelo, self.sprite), 0)
-
     def clearAlturas(self):
+        """Vacía el parámetros de las posibles alturas en las que mario se puede posar"""
         self.trues_alturas = list()
-
-    def clearAncho(self):
-        self.trues_anchos = list()
 
     def colisionBloque(self, boolList: list):
         """esta función recibe la lista de booleanos de la función colisión de los bloques y actúa en consecuencia"""
@@ -211,19 +196,17 @@ class Mario():
 
         # En caso de que haya varias alturas posibles, cogemos la más cercana a mario
         if len(self.trues_alturas) > 0:
-            min = self.position[1]
-            salida = 0
+            min = self.trues_alturas[0]
             # para todas las alturas, saca la más cercana a mario
-            for ii in range(len(self.trues_alturas)):
-                if min > abs(self.trues_alturas[ii] - self.position[1]):
-                    salida = ii
-                    min = abs(boolList[4] - self.position[1])
-            self.suelo = self.trues_alturas[salida]
+            for ii in self.trues_alturas:
+                if ii < min:
+                    min = ii
+            self.suelo = min
 
         # debajo (si está inmediatamente debajo)
         if boolList[1]:
             if self.velocidad[1] < 0 and 0 > (boolList[4] - self.position[1]) > -16:
-                self.velocidad[1] = 0
+                self.velocidad[1] = 0.5
                 self.position[1] = boolList[4] + 16
                 control = False
         # COLISIÓN LATERAL
@@ -239,3 +222,21 @@ class Mario():
                     # Te mueve a la izquierda
                     self.velocidad[0] = 0
                     self.position[0] = boolList[5] - 16
+
+    def update(self):
+        """Ejecuta todas las funciones de mario en el orden adecuado para su funcionamiento"""
+        self.acelerar()
+        self.frenar()
+        self.conteoFrames()
+        self.animacionCaminar()
+        self.movimiento()
+        self.gravedad()
+        self.cuerpoTierra()
+        self.clearAlturas()
+
+    def draw(self):
+        """Dibuja a mario"""
+        pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=0)
+        # menú debug
+        pyxel.text(0, 15, "%s\n%s, %s\n%s\n%s\n%s" % (
+            self.position, self.velocidad[0], self.velocidad[1], self.__frames_aire, self.__en_suelo, self.sprite), 0)

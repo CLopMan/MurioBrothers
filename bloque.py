@@ -64,4 +64,4 @@ class Bloque():
         return aux
 
     def draw(self):
-        pyxel.blt(self.x, self.y, *self.sprite)
+        pyxel.blt(self.x, self.y, *self.sprite, colkey=2)

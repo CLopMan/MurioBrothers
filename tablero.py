@@ -25,14 +25,17 @@ class Tablero:
     def move(self):
         """movimiento de la camara. Si mario llega al límite de la pantalla se queda inmovil y se mueve el mapa con
         la misma velocidad"""
-        moverpx = 0
-        if self.mario.position[0] > 112:
-            self.mario.position[0] = 112
-            moverpx = self.mario.velocidad[0]
-        self.x -= moverpx
-        # si se mueve el escenario también se mueven los bloques
-        for bloque in (self.bloques):
-            bloque.move(moverpx)
+        if self.x > -1784:
+            moverpx = 0
+            if self.mario.position[0] > 112:
+                self.mario.position[0] = 112
+                moverpx = self.mario.velocidad[0]
+            self.x -= moverpx
+            # si se mueve el escenario también se mueven los bloques
+            for bloque in (self.bloques):
+                bloque.move(moverpx)
+        else:
+            self.x = -1784
 
     def inputs(self):
         """Recoge los distintas entradas del jugador"""
@@ -59,16 +62,16 @@ class Tablero:
 
     def update(self):
         """Ejecuta todas las interacciones entre objetos y el mapa"""
-        self.mario.update()
-        self.move()
-        self.enemigos[0].move()
-        self.enemigos[0].cuerpoTierra()
+        # Colisiones entre Mario y enemigos con bloques
         for bloque in self.bloques:
             bloque.colision(self.mario)
-            #self.mario.colisionLados(bloque.colision2(self.mario))
             self.mario.colisionBloque(bloque.colision2(self.mario))
-        self.mario.clearAlturas()
-        print(self.mario.velocidad)
+        # update estado de mario
+        self.mario.update()
+        # movimiento de enemigos
+        self.enemigos[0].update()
+        # movimiento del mapa
+        self.move()
 
     def draw(self):
         pyxel.bltm(self.x, 0, 0, 0, 32, 256, 256)

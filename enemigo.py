@@ -28,11 +28,15 @@ class Enemigo():
         else:
             self.position[1] = 208
 
+    def cambioDir(self):
+        self.direccion *= -1
+
     def draw(self):
         pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=10)
 
+    def update(self):
+        self.move()
+        self.cuerpoTierra()
+
     def move(self):
         self.position[0] += self.direccion * constantes.VELOCIDAD_ENEMIGOS
-
-    def cambioDir(self):
-        self.direccion *= -1
