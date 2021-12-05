@@ -14,9 +14,9 @@ class Tablero:
         self.x: float = x
         self.velocidad: float = velocidad
 
-        self.interfaz: Interfaz = Interfaz(0, 999, 0, 1, 1, 3)
+        self.interfaz: Interfaz = Interfaz(0, 500 , 0, 1, 1, 3)
         # Lista de enemigos, de momento sólo he metido y colocado el primero
-        self.enemigos: list = [Enemigo(*constantes.ENEMIGOS_XY[0])]
+        self.enemigos: list = [Enemigo(*constantes.ENEMIGOS_XY[0]), Enemigo(*constantes.ENEMIGOS_XY[1])]
         self.bloques: list = []
         for _ in constantes.POSICION_BLOQUES:
             self.bloques.append(Bloque(*_))
@@ -64,12 +64,14 @@ class Tablero:
 
     def update(self):
         """Ejecuta todas las interacciones entre objetos y el mapa"""
+        self.interfaz.update()
         # Colisiones entre Mario y enemigos con bloques
         for bloque in self.bloques:
             bloque.colision(self.mario)
             self.mario.colisionBloque(bloque.colision2(self.mario))
             for enemigo in self.enemigos:
                 enemigo.colisionBloque(bloque.colision2(enemigo))
+                enemigo.colisionMario(self.mario)
         # update estado de mario
         self.mario.update()
         # movimiento de enemigos
@@ -81,7 +83,8 @@ class Tablero:
         pyxel.bltm(self.x, 0, 0, 0, 32, 256, 256)
         self.interfaz.draw()
         self.mario.draw()
-        self.enemigos[0].draw()
+        for enemigo in self.enemigos:
+            enemigo.draw()
         pyxel.text(122, 5, str(self.x), 7)
         # Bucle que dibuja los bloques rompibles (no fijarse en el tilemap- es una ref más o menos exacta del og)
         for bloque in self.bloques:

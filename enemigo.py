@@ -104,6 +104,16 @@ class Enemigo():
             # Cambia la dirección
             self.direccion *= -1
 
+    def colisionMario(self, other):
+        aux = [False, False]
+        if abs(self.position[0] - other.position[0]) < 16:
+            # Mario está dentro del enemigo
+            aux[0] = True
+        if self.position[1] - other.position[1] <= -16:
+            # Mario está debajo del enemigo
+            aux[1] = True
+        print(aux)
+
     def draw(self):
         pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=10)
 
