@@ -17,6 +17,6 @@ class Interfaz:
 
     def draw(self):
         pyxel.text(5,5,"SCORE: %i" %self.valores[0], 7)
-        pyxel.blt(84, 2 , 0, 51, 34, 10, 12, colkey=0)
+        pyxel.blt(84, 2 , 0, 51, 34, 10, 12)
         pyxel.text(100, 5, "x %i" %self.valores[2], 7)
         pyxel.text(220, 5, "TIME: %i" %self.valores[1], 7)

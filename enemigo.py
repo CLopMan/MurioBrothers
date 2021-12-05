@@ -109,10 +109,11 @@ class Enemigo():
         if abs(self.position[0] - other.position[0]) < 16:
             # Mario está dentro del enemigo
             aux[0] = True
-        if self.position[1] - other.position[1] <= -16:
+        if self.position[1] - other.position[1] <= 16:
             # Mario está debajo del enemigo
             aux[1] = True
         print(aux)
+        print(self.position[1])
 
     def draw(self):
         pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=10)
