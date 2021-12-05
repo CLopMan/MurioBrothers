@@ -4,17 +4,51 @@ import constantes
 
 from entidad import Entidad
 
+
 class Enemigo():
     def __init__(self, x, y, suelo, sprite):
-        self.position:list = [x, y]
-        self.suelo:bool = suelo
-        self.sprite:tuple = sprite
-        self.velocidad:list = [0, 0]
+        self.position: list = [x, y]
+        self.suelo: bool = suelo
+        self.sprite: tuple = sprite
+        self.velocidad: list = [0, 0]
         # dirección
-        self.direccion:bool = -1
+        self.direccion: bool = -1
         self.trues_alturas: list = []
         self.size: list = [16, 16]
 
+    # Properties
+    @property
+    def position(self):
+        return self.__position
+    @position.setter
+    def position(self, valor):
+        if type(valor) == list:
+            self.__position = valor
+
+    @property
+    def velocidad(self):
+        return self.__velocidad
+    @velocidad.setter
+    def velocidad(self, valor):
+        if type(valor) == list:
+            self.__velocidad = valor
+
+    @property
+    def position(self):
+        return self.__position
+    @position.setter
+    def position(self, valor):
+        if type(valor) == list:
+            self.__position = valor
+    @property
+    def sprite(self):
+        return self.__sprite
+    @sprite.setter
+    def sprite(self, valor):
+        if type(valor) == tuple:
+            self.__sprite = valor
+
+    # Funciones
     def cuerpoTierra(self):
         """gravedad"""
         # temporalmente el suelo está en 208, si se pasa hacia abajo corrige el error
