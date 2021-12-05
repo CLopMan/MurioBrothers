@@ -34,6 +34,8 @@ class Tablero:
             # si se mueve el escenario también se mueven los bloques
             for bloque in (self.bloques):
                 bloque.move(moverpx)
+            for enemigo in self.enemigos:
+                enemigo.move(moverpx)
         else:
             self.x = -1784
 
@@ -66,6 +68,8 @@ class Tablero:
         for bloque in self.bloques:
             bloque.colision(self.mario)
             self.mario.colisionBloque(bloque.colision2(self.mario))
+            for enemigo in self.enemigos:
+                enemigo.colisionBloque(bloque.colision2(enemigo))
         # update estado de mario
         self.mario.update()
         # movimiento de enemigos

@@ -4,7 +4,6 @@ import constantes
 
 class Mario():
     """personaje principal, conjunto de todos los parámetros necesiarios"""
-
     def __init__(self, x, y, suelo, size, sprite):
         # super().__init__(x, y, suelo, sprite)
         # Suelo de Mario
