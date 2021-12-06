@@ -67,7 +67,7 @@ class Tablero:
             y = randint(0, 12)
             if a <= 0.25:
                 b = constantes.SPRITE_KOOPA
-            self.enemigos.append(Enemigo(256, 16 * y, 208, b))
+            self.enemigos.append(Enemigo(256, 16 * y, 200, b))
 
     def borrarEnemigo(self):
         for enemigo in self.enemigos:
@@ -88,6 +88,7 @@ class Tablero:
             for enemigo in self.enemigos:
                 enemigo.colisionBloque(bloque.colision2(enemigo))
                 enemigo.colisionMario(self.mario)
+                print(enemigo.colisionMario2(self.mario))
                 enemigo.update()
         # update estado de mario
         self.mario.update()
