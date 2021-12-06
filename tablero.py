@@ -74,7 +74,7 @@ class Tablero:
             for bloque in self.bloques:
                 while abs(bloque.x - x) <= 16:
                     x += 16
-                    
+
             self.enemigos.append(Enemigo(x, 16 * y, 200, b))
 
 

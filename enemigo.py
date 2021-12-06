@@ -81,24 +81,19 @@ class Enemigo():
         """esta función recibe la lista de booleanos de la función colisión de los bloques y actúa en consecuencia"""
         # COLISIÓN VERTICAL POR ARRIBA
         # inmediatamente encima
+        control = True
         if boolList[1] and boolList[2]:
             if boolList[4] not in self.trues_alturas:
                 self.trues_alturas.append(boolList[4])
         # derecha
         if not boolList[0] and not boolList[1]:
             self.clearAlturas()
-            if self.sprite == constantes.SPRITE_GOOMBA:
-                self.suelo = 208
-            elif self.sprite == constantes.SPRITE_KOOPA:
-                self.suelo = 200
+            self.suelo = 208
         # izquierda (se ponen derecha e izquierda por separado para que no interactúen mal entre bloques)
         elif boolList[0]:
-            if self.sprite == constantes.SPRITE_GOOMBA:
-                self.suelo = 208
-            elif self.sprite == constantes.SPRITE_KOOPA:
-                self.suelo = 200
+            self.suelo = 208
 
-        # En caso de que haya varias alturas posibles, cogemos la más cercana
+        # En caso de que haya varias alturas posibles, cogemos la más cercana a mario
         if len(self.trues_alturas) > 0:
             min = self.trues_alturas[0]
             # para todas las alturas, saca la más cercana a mario
@@ -110,12 +105,9 @@ class Enemigo():
         # Colisión lateral
         if boolList[1] and (not boolList[2] and not boolList[3]):
             # Cambia la dirección
-            self.direccion *= -1
+            self.cambioDir()
 
-    # if self.sprite == constantes.SPRITE_KOOPA:
-    # print(boolList)
-    # Borrar si funciona colisionMario2
-    """def colisionMario(self, other):
+            """def colisionMario(self, other):
         Función que detecta si mario ha chocado horizontalmennte o verticalmente con un enemigo. aux[1] = True =>
         Mario chocó en la horizontal, aux[1] = True => mario chocó en la vertical
         aux = [False, False]
@@ -143,7 +135,10 @@ class Enemigo():
         return aux
 
     def draw(self):
-        pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=10)
+        if self.sprite == constantes.SPRITE_KOOPA:
+            pyxel.blt(self.position[0], self.position[1] - 8, *self.sprite, colkey=10)
+        else:
+            pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=10)
         pyxel.text(0, 216, "%s" % self.size, 0)
 
     def update(self):
