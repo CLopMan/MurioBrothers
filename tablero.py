@@ -4,6 +4,8 @@ from interfaz import Interfaz
 from mario import Mario
 from enemigo import Enemigo
 from bloque import Bloque
+from random import randint
+from random import random
 
 
 class Tablero:
@@ -57,14 +59,28 @@ class Tablero:
         # salto
         if pyxel.btn(pyxel.KEY_Z):
             self.mario.salto()
-        # pequeño debug para comprobar que el goomba cambia bien de dirección. Borrar en un futuro para que esto
-        # ocurra si se choca
-        if pyxel.btnp(pyxel.KEY_D):
-            self.enemigos[0].cambioDir()
+
+    def generarEnemigo(self):
+        if len(self.enemigos) < 4:
+            a = random()
+            b = constantes.SPRITE_GOOMBA
+            y = randint(0, 12)
+            if a <= 0.25:
+                b = constantes.SPRITE_KOOPA
+            self.enemigos.append(Enemigo(256, 16 * y, 208, b))
+
+    def borrarEnemigo(self):
+        for enemigo in self.enemigos:
+            if enemigo.position[0] < -1* enemigo.size[0]:
+                self.enemigos.remove(enemigo)
+
 
     def update(self):
         """Ejecuta todas las interacciones entre objetos y el mapa"""
         self.interfaz.update()
+        # Generar y borrar enemigo
+        self.generarEnemigo()
+        self.borrarEnemigo()
         # Colisiones entre Mario y enemigos con bloques
         for bloque in self.bloques:
             bloque.colision(self.mario)
@@ -72,10 +88,9 @@ class Tablero:
             for enemigo in self.enemigos:
                 enemigo.colisionBloque(bloque.colision2(enemigo))
                 enemigo.colisionMario(self.mario)
+                enemigo.update()
         # update estado de mario
         self.mario.update()
-        # movimiento de enemigos
-        self.enemigos[0].update()
         # movimiento del mapa
         self.move()
 

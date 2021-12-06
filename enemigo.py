@@ -14,7 +14,6 @@ class Enemigo():
         # dirección
         self.direccion: bool = -1
         self.trues_alturas: list = []
-        self.size: list = [16, 16]
 
     # Properties
     @property
@@ -34,19 +33,20 @@ class Enemigo():
             self.__velocidad = valor
 
     @property
-    def position(self):
-        return self.__position
-    @position.setter
-    def position(self, valor):
-        if type(valor) == list:
-            self.__position = valor
-    @property
     def sprite(self):
         return self.__sprite
     @sprite.setter
     def sprite(self, valor):
         if type(valor) == tuple:
             self.__sprite = valor
+
+    @property
+    def size(self):
+        if self.sprite == constantes.SPRITE_KOOPA:
+            a = (16, 24)
+        elif self.sprite == constantes.SPRITE_GOOMBA:
+            a = (16, 16)
+        return a
 
     # Funciones
     def cuerpoTierra(self):
@@ -112,13 +112,12 @@ class Enemigo():
         if self.position[1] - other.position[1] <= 16:
             # Mario está debajo del enemigo
             aux[1] = True
-        print(aux)
-        print(self.position[1])
+        """print(aux)
+        print(self.position[1])"""
 
     def draw(self):
         pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=10)
 
     def update(self):
-        self.move(0)
         self.cuerpoTierra()
         self.clearAlturas()
