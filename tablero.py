@@ -15,10 +15,9 @@ class Tablero:
         # posición en x de la cámara
         self.x: float = x
         self.velocidad: float = velocidad
-
-        self.interfaz: Interfaz = Interfaz(0, 500 , 0, 1, 1, 3)
+        self.interfaz: Interfaz = Interfaz(0, 500, 0, 1, 1, 3)
         # Lista de enemigos, de momento sólo he metido y colocado el primero
-        self.enemigos: list = [Enemigo(*constantes.ENEMIGOS_XY[0]), Enemigo(*constantes.ENEMIGOS_XY[1])]
+        self.enemigos: list = []
         self.bloques: list = []
         for _ in constantes.POSICION_BLOQUES:
             self.bloques.append(Bloque(*_))
@@ -61,17 +60,27 @@ class Tablero:
             self.mario.salto()
 
     def generarEnemigo(self):
+        lista = []
         if len(self.enemigos) < 4:
+            # Genera un enemigo (25% koopa 75% goomba)
             a = random()
             b = constantes.SPRITE_GOOMBA
-            y = randint(0, 12)
             if a <= 0.25:
                 b = constantes.SPRITE_KOOPA
-            self.enemigos.append(Enemigo(256, 16 * y, 200, b))
+            # Genera una y random
+            y = randint(0, 12)
+            x = 256
+            # Comprueba que no esté dentro de un bloque
+            for bloque in self.bloques:
+                while abs(bloque.x - x) <= 16:
+                    x += 16
+                    
+            self.enemigos.append(Enemigo(x, 16 * y, 200, b))
+
 
     def borrarEnemigo(self):
         for enemigo in self.enemigos:
-            if enemigo.position[0] < -1* enemigo.size[0]:
+            if enemigo.position[0] < - 100 or enemigo.position[1] > 240:
                 self.enemigos.remove(enemigo)
 
 
@@ -87,8 +96,8 @@ class Tablero:
             self.mario.colisionBloque(bloque.colision2(self.mario))
             for enemigo in self.enemigos:
                 enemigo.colisionBloque(bloque.colision2(enemigo))
-                enemigo.colisionMario(self.mario)
-                print(enemigo.colisionMario2(self.mario))
+                enemigo.colisionMario2(self.mario)
+                # print(enemigo.colisionMario2(self.mario))
                 enemigo.update()
         # update estado de mario
         self.mario.update()

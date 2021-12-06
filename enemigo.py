@@ -81,7 +81,6 @@ class Enemigo():
         """esta función recibe la lista de booleanos de la función colisión de los bloques y actúa en consecuencia"""
         # COLISIÓN VERTICAL POR ARRIBA
         # inmediatamente encima
-        control = True
         if boolList[1] and boolList[2]:
             if boolList[4] not in self.trues_alturas:
                 self.trues_alturas.append(boolList[4])
@@ -99,7 +98,7 @@ class Enemigo():
             elif self.sprite == constantes.SPRITE_KOOPA:
                 self.suelo = 200
 
-        # En caso de que haya varias alturas posibles, cogemos la más cercana a mario
+        # En caso de que haya varias alturas posibles, cogemos la más cercana
         if len(self.trues_alturas) > 0:
             min = self.trues_alturas[0]
             # para todas las alturas, saca la más cercana a mario
@@ -113,9 +112,12 @@ class Enemigo():
             # Cambia la dirección
             self.direccion *= -1
 
-    def colisionMario(self, other):
-        """Función que detecta si mario ha chocado horizontalmennte o verticalmente con un enemigo. aux[1] = True =>
-        Mario chocó en la horizontal, aux[1] = True => mario chocó en la vertical"""
+    # if self.sprite == constantes.SPRITE_KOOPA:
+    # print(boolList)
+    # Borrar si funciona colisionMario2
+    """def colisionMario(self, other):
+        Función que detecta si mario ha chocado horizontalmennte o verticalmente con un enemigo. aux[1] = True =>
+        Mario chocó en la horizontal, aux[1] = True => mario chocó en la vertical
         aux = [False, False]
         # Mario está dentro del enemigo
         # debug: print(abs(self.position[1] - other.position[1]), self.size[1], other.size[1])
@@ -124,7 +126,7 @@ class Enemigo():
         if other.size[1] > self.position[1] - other.position[1] >= 0 or 0 > self.position[1] - other.position[1] >-1*\
                 self.size[1]:
             aux[1] = True
-        return aux
+        return aux"""
 
     def colisionMario2(self, other):
         """Función que detecta si Mario ha colisionado con un enemigo, en caso afirmativo comprueba si mario ha
@@ -133,10 +135,8 @@ class Enemigo():
         if abs(self.position[0] - other.position[0]) < 16 and (
                 other.size[1] > self.position[1] - other.position[1] >= 0 or 0 > self.position[1] - other.position[1] > -1 * self.size[1]):
             aux[0] = True
-            # si mario viene de arriba (está ayendo) (aplicamos una correción de velocidad ya que la colisión no se activa hasta que
+            # si mario viene de arriba (aplicamos una correción de velocidad ya que la colisión no se activa hasta que
             # ambas entidades se superpongan)
-            """Comentario para Manu, borrar después: self.position[1] + other.velocidad[1] es la posición máxima en la
-             que mario podría ser detectado y venir desde arriba """
             if other.velocidad[1] > 0 and other.position[1] < self.position[1] + other.velocidad[1]:
                 aux[1] = True
         aux = tuple(aux)
