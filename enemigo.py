@@ -14,10 +14,7 @@ class Enemigo():
         # dirección
         self.direccion: int = -1
         self.trues_alturas: list = []
-        if self.sprite == constantes.SPRITE_KOOPA:
-            self.size = [16, 24]
-        elif self.sprite == constantes.SPRITE_GOOMBA:
-            self.size = [16, 16]
+        self.size = [16, 16]
 
     # Properties
     @property
