@@ -2,7 +2,9 @@ import pyxel
 
 import constantes
 
-class Enemigo():
+
+class Enemigo:
+    """Enemigos que aparecen a lo largo del nivel"""
     def __init__(self, x, y, suelo, sprite):
         self.position: list = [x, y]
         self.suelo: int = suelo
@@ -11,8 +13,9 @@ class Enemigo():
         # dirección
         self.direccion: int = -1
         self.trues_alturas: list = []
-        self.size = [16, 16]
-        self.__en_suelo = False
+        self.size: list = [16, 16]
+        self.__en_suelo: bool = False
+
     # Properties
     @property
     def position(self):
@@ -44,7 +47,6 @@ class Enemigo():
     # Funciones
     def cuerpoTierra(self):
         """esta función controla que el jugador esté pisando el suelo"""
-        # temporalmente el suelo está en 208, si se pasa hacia abajo corrige el error
         if self.position[1] > self.suelo:
             # velocidad vertical = 0
             self.velocidad[1] = 0
@@ -107,11 +109,9 @@ class Enemigo():
                 # Cambia la dirección
                 self.cambioDir()
 
-
     def update(self):
         """Update enemigo"""
         self.cuerpoTierra()
-
 
     def draw(self):
         """Dibujo enemigo"""
@@ -121,4 +121,5 @@ class Enemigo():
         else:
             pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=10)
         # Info de debug
-        pyxel.text(0, 50, "%s\n%s, %s\n%s\n %s" % (self.position, self.velocidad[0], self.velocidad[1], self.trues_alturas, self.suelo), 0)
+        pyxel.text(0, 50, "%s\n%s, %s\n%s\n %s" % (
+        self.position, self.velocidad[0], self.velocidad[1], self.trues_alturas, self.suelo), 0)

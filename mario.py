@@ -2,37 +2,35 @@ import pyxel
 import constantes
 
 
-class Mario():
-    """personaje principal, conjunto de todos los parámetros necesiarios"""
-
+class Mario:
+    """Personaje principal, conjunto de todos los parámetros necesiarios"""
     def __init__(self, x, y, suelo, size, sprite):
-        # super().__init__(x, y, suelo, sprite)
         # Suelo de Mario
-        self.suelo = suelo
+        self.suelo: int = suelo
         # ancho y alto
-        self.size = size
+        self.size: list = size
         # sprite de mario
-        self.sprite = sprite
+        self.sprite: list = sprite
         # posición x e y
         self.position: list = [x, y]
         # velocidad en x e y
         self.velocidad: list = [0.0, 0.0]
         # direccion (1 = derecha, -1 = izquierda)
-        self.direccion = 0
+        self.__direccion: int = 0
         # sprintar
-        self.correr = False
+        self.correr: bool = False
         # control de sprite
         self.sprite: list = [0, 64, 16, 16, 16]
         # disparador de salto
-        self.__saltar = False
+        self.__saltar: bool = False
         # contador de frames en el aire
-        self.__frames_aire = 0
+        self.__frames_aire: int = 0
         # comprobación de que mario está en el suelo
-        self.__en_suelo = True
+        self.__en_suelo: bool = True
         # Posibles suelos de mario
-        self.trues_alturas = list()
-
-    # MOVIMIENTO
+        self.trues_alturas: list = list()
+        # estado de mario
+        self.estado: int = 0
 
     # Atributos de sólo lectura:
     @property
@@ -226,7 +224,8 @@ class Mario():
         colisionado por arriba, aux[0] evalúa si han colisionado, aux[1] evalúa si mario viene de arriba"""
         aux = [False, False]
         if abs(other.position[0] - self.position[0]) < 16 and (
-                self.size[1] > other.position[1] - self.position[1] >= 0 or 0 > other.position[1] - self.position[1] > -1 * other.size[1]):
+                self.size[1] > other.position[1] - self.position[1] >= 0 or 0 > other.position[1] - self.position[
+            1] > -1 * other.size[1]):
             aux[0] = True
             # si mario viene de arriba (aplicamos una correción de velocidad ya que la colisión no se activa hasta que
             # ambas entidades se superpongan)
@@ -250,5 +249,5 @@ class Mario():
         """Dibuja a mario"""
         pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=0)
         # menú debug
-        pyxel.text(0, 15, "%s\n%s, %s\n%s\n%s\n%s" % (
-            self.position, self.velocidad[0], self.velocidad[1], self.__frames_aire, self.__en_suelo, self.sprite), 0)
+        # pyxel.text(0, 15, "%s\n%s, %s\n%s\n%s\n%s" % (
+        # self.position, self.velocidad[0], self.velocidad[1], self.__frames_aire, self.__en_suelo, self.sprite), 0)

@@ -9,6 +9,7 @@ tablero = Tablero(constantes.WIDTH, constantes.HEIGHT, constantes.VELOCIDAD, con
 
 
 def update():
+    # Para salir del programa
     if pyxel.btnp(pyxel.KEY_Q):
         pyxel.quit()
     tablero.inputs()

@@ -1,5 +1,7 @@
 """ Módulo de constantes: datos iniciales, proporciones de la ventana, parámetros que no varían """
 # tablero:
+import pyxel
+
 WIDTH = 256
 HEIGHT = 256
 X = 0
@@ -51,6 +53,13 @@ POSICION_BLOQUES = (
     (1792, 128, SPRITE_DIAMANTE), (1808, 112, SPRITE_DIAMANTE), (1808, 128, SPRITE_DIAMANTE),
     (1808, 144, SPRITE_DIAMANTE), (1808, 160, SPRITE_DIAMANTE), (1808, 176, SPRITE_DIAMANTE),
     (1808, 192, SPRITE_DIAMANTE), (1808, 208, SPRITE_DIAMANTE))
+
+# ==Power-ups y monedas==
+
+SPRITE_MONEDA = (0, 51, 34, 10, 12)
+SPRITE_1UP = (0, 32, 48, 16, 16)
+SPRITE_CHAMPINON = (0, 48, 48, 16, 16)
+POSICION_ENTIDADES = ()
 
 # ==Generales==
 GRAVEDAD = 0.7

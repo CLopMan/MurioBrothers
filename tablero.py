@@ -61,11 +61,12 @@ class Tablero:
         # salto
         if pyxel.btn(pyxel.KEY_Z):
             self.mario.salto()
+        # reinicio del nivel
         if pyxel.btnp(pyxel.KEY_R):
             self.reiniciar()
+        # debug de los enemigos
         if pyxel.btnp(pyxel.KEY_SPACE):
             self.enemigos.clear()
-
 
     def generarEnemigo(self):
         """Función encargada de generar enemigos con un límite de 4 a la vez en la pantalla"""
@@ -86,14 +87,13 @@ class Tablero:
         for enemigo in self.enemigos:
             if enemigo.position[0] < -16 or enemigo.position[1] >= 256:
                 self.enemigos.remove(enemigo)
+
     def reiniciar(self):
+        """Reinicio del nivel"""
         self.__init__(constantes.WIDTH, constantes.HEIGHT, constantes.VELOCIDAD, constantes.X)
 
     def borrarBloque(self):
-        """Función encargada de borrar bloques que se salen por la izquierda
-        COMENTARIO PARA MANU: esta función fue creada para ver si el error de los enemigos venía por una mala 
-        interacción entre bloques. Decidí dejarla porque así a medida que avanza el nivel tiene que hacer menos comprobaciones 
-        pero no ´se hasta que punto es más eficiente. simplementen no molesta"""
+        """Función encargada de borrar bloques que se salen por la izquierda"""
         for bloque in self.bloques:
             if bloque.x < - 16:
                 self.bloques.remove(bloque)
@@ -122,9 +122,6 @@ class Tablero:
             enemigo.update()
         # Tras haber hecho las operaciones correspondientes con cada enemigo, se pude borrar? Función encargada de eso
         self.borrarEnemigo()
-
-
-
         # update estado de mario
         self.mario.update()
         # scroll (movimiento del mapa y lo que está dibujado encima)
