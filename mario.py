@@ -16,7 +16,7 @@ class Mario:
         # velocidad en x e y
         self.velocidad: list = [0.0, 0.0]
         # direccion (1 = derecha, -1 = izquierda)
-        self.__direccion: int = 0
+        self.direccion: int = 0
         # sprintar
         self.correr: bool = False
         # control de sprite

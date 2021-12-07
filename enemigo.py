@@ -14,7 +14,6 @@ class Enemigo:
         self.direccion: int = -1
         self.trues_alturas: list = []
         self.size: list = [16, 16]
-        self.__en_suelo: bool = False
 
     # Properties
     @property
@@ -52,9 +51,8 @@ class Enemigo:
             self.velocidad[1] = 0
             # corrige la posición
             self.position[1] = self.suelo
-            self.__en_suelo = True
+
         elif self.position[1] < self.suelo:
-            self.__en_suelo = False
             self.velocidad[1] += constantes.GRAVEDAD
             self.position[1] += self.velocidad[1]
         else:
@@ -95,19 +93,18 @@ class Enemigo:
                 if ii < min:
                     min = ii
             self.suelo = min
-        if self.__en_suelo:
-            # Colisión lateral
-            if boolList[1] and (not boolList[2] and not boolList[3]):
-                # colisión derecha
-                if -16 < boolList[5] - self.position[0] < 0:
-                    # Te mueve a la derecha
-                    self.position[0] = boolList[5] + 16
-                # colisión izquierda
-                elif 0 < boolList[5] - self.position[0] < 16:
-                    # Te mueve a la izquierda
-                    self.position[0] = boolList[5] - 16
-                # Cambia la dirección
-                self.cambioDir()
+        # Colisión lateral
+        if boolList[1] and (not boolList[2] and not boolList[3]):
+            # colisión derecha
+            if -16 < boolList[5] - self.position[0] < 0:
+                # Te mueve a la derecha
+                self.position[0] = boolList[5] + 16
+            # colisión izquierda
+            elif 0 < boolList[5] - self.position[0] < 16:
+                # Te mueve a la izquierda
+                self.position[0] = boolList[5] - 16
+            # Cambia la dirección
+            self.cambioDir()
 
     def update(self):
         """Update enemigo"""

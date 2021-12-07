@@ -70,17 +70,17 @@ class Tablero:
 
     def generarEnemigo(self):
         """Función encargada de generar enemigos con un límite de 4 a la vez en la pantalla"""
-        if len(self.enemigos) < 1:
+        if len(self.enemigos) < 4:
             # Genera un enemigo (25% koopa 75% goomba)
             a = random()
             b = constantes.SPRITE_GOOMBA
             if a <= 0.25:
                 b = constantes.SPRITE_KOOPA
             # Genera una y y una x random
-            y = randint(0, 1)
+            y = 208
             x = randint(0, 4)
             # añadir enemigo a la lista con posición fuera de los límites de la cámara hacia la derecha
-            self.enemigos.append(Enemigo(256 + (16 * x), 16 * y, 200, b))
+            self.enemigos.append(Enemigo(256 + (16 * x), y, 200, b))
 
     def borrarEnemigo(self):
         """Función encargada de eliminar un enemigo si este se sale por la izquierda"""
