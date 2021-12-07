@@ -105,7 +105,8 @@ class Tablero:
         # borrar bloques que se salieron del mapa
         self.borrarBloque()
         # Generar enemigos
-        self.generarEnemigo()
+        if pyxel.frame_count % 30 == 0:
+            self.generarEnemigo()
 
         # == bucles de bloques y enemigos ==
         for bloque in self.bloques:
