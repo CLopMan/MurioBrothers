@@ -130,8 +130,7 @@ class Mario():
             self.__frames_aire = 0
 
     def cuerpoTierra(self):
-        """esta función controla que el jugador esté pisando el suelo, si no lo está pisando cuenta los frames que está
-        en el aire"""
+        """esta función controla que el jugador esté pisando el suelo"""
         # temporalmente el suelo está en 208, si se pasa hacia abajo corrige el error
         if self.position[1] > self.suelo:
             self.__en_suelo = True
@@ -142,7 +141,6 @@ class Mario():
             self.position[1] = self.suelo
         elif self.position[1] < self.suelo:
             self.__en_suelo = False
-            # si se despega del suelo cuenta los frames que esté ne el aire
 
     def gravedad(self):
         """Aplica una aceleración hacia abajo si mario se despega del suelo"""

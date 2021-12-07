@@ -9,9 +9,11 @@ class Bloque():
     def move(self, px):
         self.x -= px
 
-    def colision(self, other):
-        """Función que comprueba colisiones entre entidades y bloques (aux[0] = esquina superior izquierda,
-        aux[1] = esquina superior derecha, aux[2] = esquina inferior derecha, aux[3] = esquina inferior izquierda)"""
+    """def colision(self, other):
+        """"""Función que comprueba colisiones entre entidades y bloques (aux[0] = esquina superior izquierda,
+        aux[1] = esquina superior derecha, aux[2] = esquina inferior derecha, aux[3] = esquina inferior izquierda)
+        Intento fallido
+        """"""
         aux = [False, False, False, False]
         # Comprobación de que mario colisione con la esquina sup. izq.
         if abs(other.position[0] + other.size[0]/2 - self.x) < 8 and (
@@ -30,7 +32,7 @@ class Bloque():
                 abs(other.position[1] + other.size[1] / 2 - (self.y + 16)) < 8):
             aux[3] = True
         aux = tuple(aux)
-        return aux
+        return aux"""
 
     def colision2(self, other):
         """Función para comprobar la posición de mario o un enemigo con respecto de un bloque"""
@@ -49,19 +51,8 @@ class Bloque():
         # Other está debajo
         elif self.y - other.position[1] <= -16:
             aux[3] = True
-        #print(aux)
-
-        """Combinaciones:
-        False, False, False -> derecha y debajo
-        False, False, True -> derecha y encima
-        False, True, True -> Inmediatamente encima
-        False, True, False -> inmediatamente debajo
-        True, False, False -> izquierda y debajo
-        True, False, True -> izquierda y encima
-        True, True, True -> No es posible (izq. y en el bloque y encima)
-        True, True, False -> No es posible (izq, en el bloque y debajo)
-        """
         return aux
 
     def draw(self):
+        """Funcion para el dibujo de bloques"""
         pyxel.blt(self.x, self.y, *self.sprite, colkey=2)

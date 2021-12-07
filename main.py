@@ -1,3 +1,5 @@
+"""Módulo principal: tamaño de ventaja e inicialización del juego"""
+
 import pyxel
 from tablero import Tablero
 import constantes
@@ -14,6 +16,7 @@ def update():
 
 
 def draw():
+    # fondo
     pyxel.cls(0)
     tablero.draw()
 

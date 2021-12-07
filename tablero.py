@@ -19,6 +19,7 @@ class Tablero:
         # Lista de enemigos, de momento sólo he metido y colocado el primero
         self.enemigos: list = []
         self.bloques: list = []
+        # Lista de bloues, en el módulo de constantes están los datos para inicializar
         for _ in constantes.POSICION_BLOQUES:
             self.bloques.append(Bloque(*_))
         self.mario: Mario = Mario(*constantes.POSICION_INICIAL_M)
@@ -26,13 +27,15 @@ class Tablero:
     def move(self):
         """movimiento de la camara. Si mario llega al límite de la pantalla se queda inmovil y se mueve el mapa con
         la misma velocidad"""
+        # límite del mapa
         if self.x > -1784:
+            # scroll junto con todos los elemntos dibujados en él
             moverpx = 0
             if self.mario.position[0] > 112:
                 self.mario.position[0] = 112
                 moverpx = self.mario.velocidad[0]
             self.x -= moverpx
-            # si se mueve el escenario también se mueven los bloques
+            # si se mueve el escenario también se mueven los bloques y enemigos
             for bloque in (self.bloques):
                 bloque.move(moverpx)
             for enemigo in self.enemigos:
@@ -44,7 +47,7 @@ class Tablero:
         """Recoge los distintas entradas del jugador"""
         # direccion = 0
         self.mario.direccion_reset()
-        # correr
+        # imput para correr
         if pyxel.btn(pyxel.KEY_X):
             self.mario.sprint()
         else:
@@ -60,57 +63,74 @@ class Tablero:
             self.mario.salto()
 
     def generarEnemigo(self):
-        lista = []
+        """Función encargada de generar enemigos con un límite de 4 a la vez en la pantalla"""
         if len(self.enemigos) < 4:
             # Genera un enemigo (25% koopa 75% goomba)
             a = random()
             b = constantes.SPRITE_GOOMBA
             if a <= 0.25:
                 b = constantes.SPRITE_KOOPA
-            # Genera una y random
+            # Genera una y y una x random
             y = randint(0, 12)
-            x = 256
-            # Comprueba que no esté dentro de un bloque
-            for bloque in self.bloques:
-                while abs(bloque.x - x) <= 16:
-                    x += 16
-
-            self.enemigos.append(Enemigo(x, 16 * y, 200, b))
-
+            x = randint(0, 4)
+            # añadir enemigo a la lista con posición fuera de los límites de la cámara hacia la derecha
+            self.enemigos.append(Enemigo(256 + (16*x), 16 * y, 200, b))
 
     def borrarEnemigo(self):
+        """Función encargada de eliminar un enemigo si este se sale por la izquierda"""
         for enemigo in self.enemigos:
-            if enemigo.position[0] < - 100 or enemigo.position[1] > 240:
+            if enemigo.position[0] < -16 or enemigo.position[1] >= 240:
                 self.enemigos.remove(enemigo)
 
+    """def borrarBloque(self):
+        """"""Función encargada de borrar bloques que se salen por la izquierda
+        COMENTARIO PARA MANU: esta función fue creada para ver si el error de los enemigos venía por una mala 
+        interacción entre bloques. Decidí dejarla porque así a medida que avanza el nivel tiene que hacer menos comprobaciones 
+        pero no ´se hasta que punto es más eficiente. simplementen o molesta
+        for bloque in self.bloques:
+            if bloque.x < - 16:
+                self.bloques.remove(bloque)"""
 
     def update(self):
-        """Ejecuta todas las interacciones entre objetos y el mapa"""
+        """Ejecuta todos los métodos en el orden correcto"""
+        # Interfaz (tiempo, monedas, vidas...)
         self.interfaz.update()
-        # Generar y borrar enemigo
+        # borrar bloques que se salieron del mapa
+        # self.borrarBloque()
+        # Generar enemigos
         self.generarEnemigo()
-        self.borrarEnemigo()
-        # Colisiones entre Mario y enemigos con bloques
+        # == bucles de bloques y enemigos ==
         for bloque in self.bloques:
-            bloque.colision(self.mario)
+            # colisión mario-bloque
             self.mario.colisionBloque(bloque.colision2(self.mario))
+            # interacción con enemigos
             for enemigo in self.enemigos:
+                # colisión enemigo-bloque
                 enemigo.colisionBloque(bloque.colision2(enemigo))
-                enemigo.colisionMario2(self.mario)
-                # print(enemigo.colisionMario2(self.mario))
-                enemigo.update()
+
+        # Update de enemigo (debe ir en un bucle separado porque el anterior hizo todos los cálculos necesarios para el
+        # enemigo: colisiones, suelo. Esta función ahora se encarga de trabajar con esos datos)
+        for enemigo in self.enemigos:
+            enemigo.update()
+        # Tras haber hecho las operaciones correspondientes con cada enemigo, se pude borrar? Función encargada de eso
+        self.borrarEnemigo()
+
         # update estado de mario
         self.mario.update()
-        # movimiento del mapa
+        # scroll (movimiento del mapa y lo que está dibujado encima)
         self.move()
 
     def draw(self):
+        """Función encargada de dibujar el mapa y lo demás encima"""
+        # fondo
         pyxel.bltm(self.x, 0, 0, 0, 32, 256, 256)
+        # Interfaz
         self.interfaz.draw()
+        # Mario
         self.mario.draw()
+        # Enemigos
         for enemigo in self.enemigos:
             enemigo.draw()
-        pyxel.text(122, 5, str(self.x), 7)
-        # Bucle que dibuja los bloques rompibles (no fijarse en el tilemap- es una ref más o menos exacta del og)
+        # bloques
         for bloque in self.bloques:
             bloque.draw()

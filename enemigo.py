@@ -2,15 +2,12 @@ import pyxel
 
 import constantes
 
-from entidad import Entidad
-
-
 class Enemigo():
     def __init__(self, x, y, suelo, sprite):
         self.position: list = [x, y]
-        self.suelo: bool = suelo
+        self.suelo: int = suelo
         self.sprite: tuple = sprite
-        self.velocidad: list = [0, 0]
+        self.velocidad: list = [constantes.VELOCIDAD_ENEMIGOS, 0]
         # dirección
         self.direccion: int = -1
         self.trues_alturas: list = []
@@ -44,34 +41,31 @@ class Enemigo():
         if type(valor) == tuple:
             self.__sprite = valor
 
-    """@property
-    def size(self):
-        if self.sprite == constantes.SPRITE_KOOPA:
-            a = (16, 24)
-        elif self.sprite == constantes.SPRITE_GOOMBA:
-            a = (16, 16)"""
-
     # Funciones
     def cuerpoTierra(self):
-        """gravedad"""
+        """esta función controla que el jugador esté pisando el suelo"""
         # temporalmente el suelo está en 208, si se pasa hacia abajo corrige el error
         if self.position[1] > self.suelo:
             # velocidad vertical = 0
             self.velocidad[1] = 0
             # corrige la posición
             self.position[1] = self.suelo
-
-        elif self.position[1] < self.suelo - 2:
-            self.velocidad[1] += constantes.GRAVEDAD
+        elif self.position[1] < self.suelo:
+            if self.velocidad[1] < constantes.LIM_VEL_VERT:
+                self.velocidad[1] += constantes.GRAVEDAD
+            else:
+                self.velocidad[1] = constantes.LIM_VEL_VERT
             self.position[1] += self.velocidad[1]
         else:
             self.position[1] = self.suelo
 
     def cambioDir(self):
+        """Cambia el sentido horizontal del movimiento"""
         self.direccion *= -1
 
     def move(self, valor):
-        self.position[0] += self.direccion * constantes.VELOCIDAD_ENEMIGOS - valor
+        """Movimiento horizontal"""
+        self.position[0] += self.direccion * self.velocidad[0] - valor
 
     def clearAlturas(self):
         """Vacía el parámetros de las posibles alturas en las que mario se puede posar"""
@@ -79,9 +73,9 @@ class Enemigo():
 
     def colisionBloque(self, boolList: list):
         """esta función recibe la lista de booleanos de la función colisión de los bloques y actúa en consecuencia"""
+        control = True
         # COLISIÓN VERTICAL POR ARRIBA
         # inmediatamente encima
-        control = True
         if boolList[1] and boolList[2]:
             if boolList[4] not in self.trues_alturas:
                 self.trues_alturas.append(boolList[4])
@@ -93,7 +87,7 @@ class Enemigo():
         elif boolList[0]:
             self.suelo = 208
 
-        # En caso de que haya varias alturas posibles, cogemos la más cercana a mario
+        # En caso de que haya varias alturas posibles, cogemos la más cercana al enemigo
         if len(self.trues_alturas) > 0:
             min = self.trues_alturas[0]
             # para todas las alturas, saca la más cercana a mario
@@ -104,21 +98,16 @@ class Enemigo():
 
         # Colisión lateral
         if boolList[1] and (not boolList[2] and not boolList[3]):
+            # colisión derecha
+            if -16 < boolList[5] - self.position[0] < 0:
+                # Te mueve a la derecha
+                self.position[0] = boolList[5] + 16
+            # colisión izquierda
+            elif 0 < boolList[5] - self.position[0] < 16:
+                # Te mueve a la izquierda
+                self.position[0] = boolList[5] - 16
             # Cambia la dirección
             self.cambioDir()
-
-            """def colisionMario(self, other):
-        Función que detecta si mario ha chocado horizontalmennte o verticalmente con un enemigo. aux[1] = True =>
-        Mario chocó en la horizontal, aux[1] = True => mario chocó en la vertical
-        aux = [False, False]
-        # Mario está dentro del enemigo
-        # debug: print(abs(self.position[1] - other.position[1]), self.size[1], other.size[1])
-        if abs(self.position[0] - other.position[0]) < 16:
-            aux[0] = True
-        if other.size[1] > self.position[1] - other.position[1] >= 0 or 0 > self.position[1] - other.position[1] >-1*\
-                self.size[1]:
-            aux[1] = True
-        return aux"""
 
     def colisionMario2(self, other):
         """Función que detecta si Mario ha colisionado con un enemigo, en caso afirmativo comprueba si mario ha
@@ -134,13 +123,16 @@ class Enemigo():
         aux = tuple(aux)
         return aux
 
+    def update(self):
+        """Update enemigo"""
+        self.cuerpoTierra()
+
     def draw(self):
+        """Dibujo enemigo"""
+        # corrección de posición para que el dibujo quede bien
         if self.sprite == constantes.SPRITE_KOOPA:
             pyxel.blt(self.position[0], self.position[1] - 8, *self.sprite, colkey=10)
         else:
             pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=10)
-        pyxel.text(0, 216, "%s" % self.size, 0)
-
-    def update(self):
-        self.cuerpoTierra()
-        self.clearAlturas()
+        # Info de debug
+        pyxel.text(0, 50, "%s\n%s, %s\n%s\n %s" % (self.position, self.velocidad[0], self.velocidad[1], self.trues_alturas, self.suelo), 0)
