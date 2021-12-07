@@ -61,44 +61,52 @@ class Tablero:
         # salto
         if pyxel.btn(pyxel.KEY_Z):
             self.mario.salto()
+        if pyxel.btnp(pyxel.KEY_R):
+            self.reiniciar()
+        if pyxel.btnp(pyxel.KEY_SPACE):
+            self.enemigos.clear()
+
 
     def generarEnemigo(self):
         """Función encargada de generar enemigos con un límite de 4 a la vez en la pantalla"""
-        if len(self.enemigos) < 4:
+        if len(self.enemigos) < 1:
             # Genera un enemigo (25% koopa 75% goomba)
             a = random()
             b = constantes.SPRITE_GOOMBA
             if a <= 0.25:
                 b = constantes.SPRITE_KOOPA
             # Genera una y y una x random
-            y = randint(0, 12)
+            y = randint(0, 1)
             x = randint(0, 4)
             # añadir enemigo a la lista con posición fuera de los límites de la cámara hacia la derecha
-            self.enemigos.append(Enemigo(256 + (16*x), 16 * y, 200, b))
+            self.enemigos.append(Enemigo(256 + (16 * x), 16 * y, 200, b))
 
     def borrarEnemigo(self):
         """Función encargada de eliminar un enemigo si este se sale por la izquierda"""
         for enemigo in self.enemigos:
-            if enemigo.position[0] < -16 or enemigo.position[1] >= 240:
+            if enemigo.position[0] < -16 or enemigo.position[1] >= 256:
                 self.enemigos.remove(enemigo)
+    def reiniciar(self):
+        self.__init__(constantes.WIDTH, constantes.HEIGHT, constantes.VELOCIDAD, constantes.X)
 
-    """def borrarBloque(self):
-        """"""Función encargada de borrar bloques que se salen por la izquierda
+    def borrarBloque(self):
+        """Función encargada de borrar bloques que se salen por la izquierda
         COMENTARIO PARA MANU: esta función fue creada para ver si el error de los enemigos venía por una mala 
         interacción entre bloques. Decidí dejarla porque así a medida que avanza el nivel tiene que hacer menos comprobaciones 
-        pero no ´se hasta que punto es más eficiente. simplementen o molesta
+        pero no ´se hasta que punto es más eficiente. simplementen no molesta"""
         for bloque in self.bloques:
             if bloque.x < - 16:
-                self.bloques.remove(bloque)"""
+                self.bloques.remove(bloque)
 
     def update(self):
         """Ejecuta todos los métodos en el orden correcto"""
         # Interfaz (tiempo, monedas, vidas...)
         self.interfaz.update()
         # borrar bloques que se salieron del mapa
-        # self.borrarBloque()
+        self.borrarBloque()
         # Generar enemigos
         self.generarEnemigo()
+
         # == bucles de bloques y enemigos ==
         for bloque in self.bloques:
             # colisión mario-bloque
@@ -114,6 +122,8 @@ class Tablero:
             enemigo.update()
         # Tras haber hecho las operaciones correspondientes con cada enemigo, se pude borrar? Función encargada de eso
         self.borrarEnemigo()
+
+
 
         # update estado de mario
         self.mario.update()

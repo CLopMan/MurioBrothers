@@ -4,6 +4,7 @@ import constantes
 
 class Mario():
     """personaje principal, conjunto de todos los parámetros necesiarios"""
+
     def __init__(self, x, y, suelo, size, sprite):
         # super().__init__(x, y, suelo, sprite)
         # Suelo de Mario
@@ -219,6 +220,20 @@ class Mario():
                     # Te mueve a la izquierda
                     self.velocidad[0] = 0
                     self.position[0] = boolList[5] - 16
+
+    def colisionEntidad(self, other):
+        """Función que detecta si Mario ha colisionado con un enemigo, en caso afirmativo comprueba si mario ha
+        colisionado por arriba, aux[0] evalúa si han colisionado, aux[1] evalúa si mario viene de arriba"""
+        aux = [False, False]
+        if abs(other.position[0] - self.position[0]) < 16 and (
+                self.size[1] > other.position[1] - self.position[1] >= 0 or 0 > other.position[1] - self.position[1] > -1 * other.size[1]):
+            aux[0] = True
+            # si mario viene de arriba (aplicamos una correción de velocidad ya que la colisión no se activa hasta que
+            # ambas entidades se superpongan)
+            if self.velocidad[1] > 0 and self.position[1] < other.position[1] + self.velocidad[1]:
+                aux[1] = True
+        aux = tuple(aux)
+        return aux
 
     def update(self):
         """Ejecuta todas las funciones de mario en el orden adecuado para su funcionamiento"""
