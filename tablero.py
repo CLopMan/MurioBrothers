@@ -19,9 +19,11 @@ class Tablero:
         # Lista de enemigos, de momento sólo he metido y colocado el primero
         self.enemigos: list = []
         self.bloques: list = []
+        self.monedas: list = []
         # Lista de bloues, en el módulo de constantes están los datos para inicializar
         for _ in constantes.POSICION_BLOQUES:
             self.bloques.append(Bloque(*_))
+        # Lista de monedas que que aparecen en el mapa
         self.mario: Mario = Mario(*constantes.POSICION_INICIAL_M)
 
     def move(self):
@@ -70,7 +72,7 @@ class Tablero:
 
     def generarEnemigo(self):
         """Función encargada de generar enemigos con un límite de 4 a la vez en la pantalla"""
-        i = randint(1, 30)
+        i = randint(1, 10)
         if pyxel.frame_count % i == 0:
             # Genera un enemigo (25% koopa 75% goomba)
             a = random()
@@ -82,7 +84,7 @@ class Tablero:
             x = randint(0, 4)
             # comprobamos que el enemigo no esté dentro de un bloque
             for bloque in self.bloques:
-                if abs(bloque.x - x) < 16 and abs(bloque.y - y) < b[-1]:
+                while abs(bloque.x - x) < 16 and abs(bloque.y - y) < b[-1]:
                     x += 16
             if len(self.enemigos) < 4:
                 # añadir enemigo a la lista con posición fuera de los límites de la cámara hacia la derecha
@@ -122,6 +124,7 @@ class Tablero:
             for enemigo in self.enemigos:
                 # colisión enemigo-bloque
                 enemigo.colisionBloque(bloque.colision2(enemigo))
+        # == bucle de monedas ==
 
         # Update de enemigo (debe ir en un bucle separado porque el anterior hizo todos los cálculos necesarios para el
         # enemigo: colisiones, suelo. Esta función ahora se encarga de trabajar con esos datos)
