@@ -47,9 +47,9 @@ class Tablero:
 
     def inputs(self):
         """Recoge los distintas entradas del jugador"""
-        # direccion = 0
+        # __direccion = 0
         self.mario.direccion_reset()
-        # imput para correr
+        # imput para __correr
         if pyxel.btn(pyxel.KEY_X):
             self.mario.sprint()
         else:
@@ -84,7 +84,7 @@ class Tablero:
             x = randint(0, 4)
             # comprobamos que el enemigo no esté dentro de un bloque
             for bloque in self.bloques:
-                while abs(bloque.x - x) < 16 and abs(bloque.y - y) < b[-1]:
+                while abs(bloque.x - x) < 16 and -16 < bloque.y - y < b[-1]:
                     x += 16
             if len(self.enemigos) < 4:
                 # añadir enemigo a la lista con posición fuera de los límites de la cámara hacia la derecha
@@ -127,7 +127,7 @@ class Tablero:
         # == bucle de monedas ==
 
         # Update de enemigo (debe ir en un bucle separado porque el anterior hizo todos los cálculos necesarios para el
-        # enemigo: colisiones, suelo. Esta función ahora se encarga de trabajar con esos datos)
+        # enemigo: colisiones, __suelo. Esta función ahora se encarga de trabajar con esos datos)
         for enemigo in self.enemigos:
             enemigo.update()
         # Tras haber hecho las operaciones correspondientes con cada enemigo, se pude borrar? Función encargada de eso

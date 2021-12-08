@@ -14,7 +14,7 @@ VELOCIDAD_ENEMIGOS = 1
 
 # ==MARIO==
 POSICION_INICIAL_M = (5, 208, 208, [16, 16], [0, 64, 16, 16, 16])
-# Para los dos siguientes parámentros el valor 0 corresponde con andar y el 1 con correr
+# Para los dos siguientes parámentros el valor 0 corresponde con andar y el 1 con __correr
 ACELERACION = (0.25, 0.5)
 VELOCIDAD_LIMITE = (2.5, 5)
 ROZAMIENTO = (0.125, 0.25)

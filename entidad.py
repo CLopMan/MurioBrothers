@@ -15,7 +15,7 @@ class Entidad:
         return constantes.GRAVEDAD
 
     def gravedad(self):
-        """Aplica una aceleración hacia abajo si mario se despega del suelo"""
+        """Aplica una aceleración hacia abajo si mario se despega del __suelo"""
         if not self.__en_suelo:
             self.velocidad[1] += self.acel_gravedad
 

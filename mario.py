@@ -5,37 +5,37 @@ import constantes
 class Mario:
     """Personaje principal, conjunto de todos los parámetros necesiarios"""
     def __init__(self, x, y, suelo, size, sprite):
+        # posición x e y
+        self.position: list = [x, y]
         # Suelo de Mario
-        self.suelo: int = suelo
+        self.__suelo: int = suelo
         # ancho y alto
         self.size: list = size
         # sprite de mario
         self.sprite: list = sprite
-        # posición x e y
-        self.position: list = [x, y]
         # velocidad en x e y
         self.velocidad: list = [0.0, 0.0]
-        # direccion (1 = derecha, -1 = izquierda)
-        self.direccion: int = 0
-        # sprintar
-        self.correr: bool = False
-        # control de sprite
-        self.sprite: list = [0, 64, 16, 16, 16]
+        # __direccion (1 = derecha, -1 = izquierda)
+        self.__direccion: int = 0
+        # estado de mario (si es grande, pequeño, flor de fuego o estrella)
+        self.estado: int = 0
+        # DISPARADORES DE CIERTAS ACCIONES DE MOVIMEINTO
+        # disparador sprintar
+        self.__correr: bool = False
         # disparador de salto
         self.__saltar: bool = False
+        # PARÁMETROS DE CONTROL SOBRE ALGUNAS FUNCIONES
         # contador de frames en el aire
         self.__frames_aire: int = 0
-        # comprobación de que mario está en el suelo
+        # comprobación de que mario está en el __suelo
         self.__en_suelo: bool = True
         # Posibles suelos de mario
-        self.trues_alturas: list = list()
-        # estado de mario
-        self.estado: int = 0
+        self.__trues_alturas: list = list()
 
     # Atributos de sólo lectura:
     @property
     def aceleracion(self):
-        if self.correr:
+        if self.__correr:
             return constantes.ACELERACION[1]
         else:
             return constantes.ACELERACION[0]
@@ -46,14 +46,14 @@ class Mario:
 
     @property
     def velocidad_limite(self):
-        if self.correr:
+        if self.__correr:
             return constantes.VELOCIDAD_LIMITE[1]
         else:
             return constantes.VELOCIDAD_LIMITE[0]
 
     @property
     def rozamiento(self):
-        if self.correr:
+        if self.__correr:
             return constantes.ROZAMIENTO[1]
         else:
             return constantes.ROZAMIENTO[0]
@@ -61,40 +61,40 @@ class Mario:
     # Funciones del movimiento
 
     def sprint(self):
-        """Disparador de la función correr"""
+        """Disparador de la función __correr"""
         if self.__en_suelo:
-            self.correr = True
+            self.__correr = True
 
     def notsprint(self):
-        """Desactivar correr"""
-        self.correr = False
+        """Desactivar __correr"""
+        self.__correr = False
 
     # métodos para direcciones. Se usan sumas para que puedas pulsar varios botones a la vez y te quedes quieto
     def direccion_right(self):
-        """Cambia la direccion hacia la derecha"""
+        """Cambia la __direccion hacia la derecha"""
         self.sprite[1] = 64
-        # sprite de frenado en caso de que vengamos de otra direccion
+        # sprite de frenado en caso de que vengamos de otra __direccion
         if self.velocidad[0] < 0:
             self.sprite[2] = 0
-        self.direccion += 1
+        self.__direccion += 1
 
     def direccion_left(self):
         """varía la dirección a la izquierda"""
         self.sprite[1] = 80
-        # sprite de frenado si venimos de la otra direccion
+        # sprite de frenado si venimos de la otra __direccion
         if self.velocidad[0] > 0:
             self.sprite[2] = 0
-        self.direccion -= 1
+        self.__direccion -= 1
 
     def direccion_reset(self):
         """resetea la dirección a 0"""
-        self.direccion = 0
+        self.__direccion = 0
 
     def acelerar(self):
         """Varía la velocidad del jugador hasta un límite de 3px/s en la dirección especificada por el input"""
         # si la dirección es 0 significa que no hay input
-        if self.direccion != 0 and abs(self.velocidad[0]) <= self.velocidad_limite:
-            self.velocidad[0] += self.direccion * self.aceleracion
+        if self.__direccion != 0 and abs(self.velocidad[0]) <= self.velocidad_limite:
+            self.velocidad[0] += self.__direccion * self.aceleracion
 
     def frenar(self):
         """aplica una fuerza de rozamiento sobre el jugador"""
@@ -129,20 +129,20 @@ class Mario:
             self.__frames_aire = 0
 
     def cuerpoTierra(self):
-        """esta función controla que el jugador esté pisando el suelo"""
-        # temporalmente el suelo está en 208, si se pasa hacia abajo corrige el error
-        if self.position[1] > self.suelo:
+        """esta función controla que el jugador esté pisando el __suelo"""
+        # temporalmente el __suelo está en 208, si se pasa hacia abajo corrige el error
+        if self.position[1] > self.__suelo:
             self.__en_suelo = True
             # resetea el valor de frames en el aire
             # velocidad vertical = 0
             self.velocidad[1] = 0
             # corrige la posición
-            self.position[1] = self.suelo
-        elif self.position[1] < self.suelo:
+            self.position[1] = self.__suelo
+        elif self.position[1] < self.__suelo:
             self.__en_suelo = False
 
     def gravedad(self):
-        """Aplica una aceleración hacia abajo si mario se despega del suelo"""
+        """Aplica una aceleración hacia abajo si mario se despega del __suelo"""
         if not self.__en_suelo:
             self.velocidad[1] += self.acel_gravedad
 
@@ -155,9 +155,9 @@ class Mario:
     def animacionCaminar(self):
         """Controla los sprites de mario en los movimientos básicos, los sprites están organizados por columnas. Las
         funciones de dirección establecen qué columna usamos y esta función define cual de las skins"""
-        # animación de caminar si está en el suelo y la dirección y el sentido de la velocidad coinciden. Si no
+        # animación de caminar si está en el __suelo y la dirección y el sentido de la velocidad coinciden. Si no
         # coinciden significa que todavía se está ejecutando el freno activo (skin propia)
-        if self.__en_suelo and self.direccion * self.velocidad[0] >= 0:
+        if self.__en_suelo and self.__direccion * self.velocidad[0] >= 0:
             self.sprite[2] = 16
             if self.velocidad[0] != 0:
                 # cada periodo de 5 frames cambia de sprite
@@ -172,7 +172,7 @@ class Mario:
 
     def clearAlturas(self):
         """Vacía el parámetros de las posibles alturas en las que mario se puede posar"""
-        self.trues_alturas = list()
+        self.__trues_alturas = list()
 
     def colisionBloque(self, boolList: list):
         """esta función recibe la lista de booleanos de la función colisión de los bloques y actúa en consecuencia"""
@@ -180,24 +180,24 @@ class Mario:
         # inmediatamente encima
         control = True
         if boolList[1] and boolList[2]:
-            if boolList[4] not in self.trues_alturas:
-                self.trues_alturas.append(boolList[4])
+            if boolList[4] not in self.__trues_alturas:
+                self.__trues_alturas.append(boolList[4])
         # derecha
         if not boolList[0] and not boolList[1]:
             self.clearAlturas()
-            self.suelo = 208
+            self.__suelo = 208
         # izquierda (se ponen derecha e izquierda por separado para que no interactúen mal entre bloques)
         elif boolList[0]:
-            self.suelo = 208
+            self.__suelo = 208
 
         # En caso de que haya varias alturas posibles, cogemos la más cercana a mario
-        if len(self.trues_alturas) > 0:
-            min = self.trues_alturas[0]
+        if len(self.__trues_alturas) > 0:
+            min = self.__trues_alturas[0]
             # para todas las alturas, saca la más cercana a mario
-            for ii in self.trues_alturas:
+            for ii in self.__trues_alturas:
                 if ii < min:
                     min = ii
-            self.suelo = min
+            self.__suelo = min
 
         # debajo (si está inmediatamente debajo)
         if boolList[1]:

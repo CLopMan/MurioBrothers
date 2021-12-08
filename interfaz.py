@@ -35,7 +35,7 @@ class Interfaz:
     def draw(self):
         """Dibujo de la interfaz"""
         pyxel.text(5, 5, "SCORE: %i" %self.valores[0], 7)
-        pyxel.blt(84, 2, *constantes.SPRITE_MONEDA)
+        pyxel.blt(84, 15, *constantes.SPRITE_MONEDA)
         pyxel.text(100, 5, "x %i" %self.valores[2], 7)
         pyxel.blt(148, 2, *constantes.SPRITE_1UP, colkey=0)
         pyxel.text(164, 5, "x %i" %self.valores[5], 7)
