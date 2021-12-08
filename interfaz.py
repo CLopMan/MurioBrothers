@@ -17,12 +17,16 @@ class Interfaz:
             self.final_timer = True
 
     def restarVidas(self):
-        """Resta unna vida a mario"""
+        """Resta una vida a mario"""
         self.valores[5] -= 1
 
     def sumarPuntuacion(self, valor):
         """Suma x puntos al marcador de Mario"""
         self.valores[0] += valor
+
+    def sumarMonedas(self):
+        """Suma 1 al contador de monedas"""
+        self.valores[2] += 1
 
     def update(self):
         """Update de la interfaz"""
