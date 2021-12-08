@@ -100,18 +100,23 @@ class Tablero:
         """Reinicio del nivel"""
         self.__init__(constantes.WIDTH, constantes.HEIGHT, constantes.VELOCIDAD, constantes.X)
 
-    def borrarBloque(self):
+    def borrarBloque(self, bloque):
         """Función encargada de borrar bloques que se salen por la izquierda"""
-        for bloque in self.bloques:
-            if bloque.x < - 16:
-                self.bloques.remove(bloque)
+        if bloque.x < - 16:
+            self.bloques.remove(bloque)
+
+    def interaccionMarioBloque(self, bloque):
+        """Función que aplica la transformación adecuada a un bloque según su interación con mario"""
+        if bloque.sprite == constantes.SPRITE_BLOQUE and self.mario.estado >= 0:
+            self.bloques.remove(bloque)
+        if bloque.sprite == constantes.SPRITE_INTERR:
+            bloque.cambioBloqueLiso()
 
     def update(self):
         """Ejecuta todos los métodos en el orden correcto"""
         # Interfaz (tiempo, monedas, vidas...)
         self.interfaz.update()
-        # borrar bloques que se salieron del mapa
-        self.borrarBloque()
+
         # Generar enemigos
         if pyxel.frame_count % 30 == 0:
             self.generarEnemigo()
@@ -119,7 +124,10 @@ class Tablero:
         # == bucles de bloques y enemigos ==
         for bloque in self.bloques:
             # colisión mario-bloque
-            self.mario.colisionBloque(bloque.colision2(self.mario))
+            if self.mario.colisionBloque(bloque.colision2(self.mario)):
+                self.interaccionMarioBloque(bloque)
+            # si el bloque se sale de escena
+            self.borrarBloque(bloque)
             # interacción con enemigos
             for enemigo in self.enemigos:
                 # colisión enemigo-bloque

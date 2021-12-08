@@ -1,5 +1,8 @@
 import pyxel
 
+import constantes
+
+
 class Bloque():
     def __init__(self, x, y, sprite):
         self.x: int = x
@@ -28,6 +31,9 @@ class Bloque():
         elif self.y - other.position[1] <= -16:
             aux[3] = True
         return aux
+
+    def cambioBloqueLiso(self):
+        self.sprite = constantes.SPRITE_LISO
 
     def draw(self):
         """Funcion para el dibujo de bloques"""

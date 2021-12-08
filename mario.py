@@ -175,7 +175,9 @@ class Mario:
         self.__trues_alturas = list()
 
     def colisionBloque(self, boolList: list):
-        """esta función recibe la lista de booleanos de la función colisión de los bloques y actúa en consecuencia"""
+        """esta función recibe la lista de booleanos de la función colisión de los bloques y actúa en consecuencia
+        Si ha colisionado por abajo devuelve un booleano que el método interaccionMarioBloque de tablero usará para
+        aplicar las transformaciones adecuadas a los bloques"""
         # COLISIÓN VERTICAL POR ARRIBA
         # inmediatamente encima
         control = True
@@ -205,6 +207,7 @@ class Mario:
                 self.velocidad[1] = 0.5
                 self.position[1] = boolList[4] + 16
                 control = False
+                return True
         # COLISIÓN LATERAL
         if control:
             if boolList[1] and (not boolList[2] and not boolList[3]):
@@ -218,6 +221,7 @@ class Mario:
                     # Te mueve a la izquierda
                     self.velocidad[0] = 0
                     self.position[0] = boolList[5] - 16
+                return False
 
     def colisionEntidad(self, other):
         """Función que detecta si Mario ha colisionado con un enemigo, en caso afirmativo comprueba si mario ha
