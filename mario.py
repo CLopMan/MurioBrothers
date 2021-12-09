@@ -237,6 +237,9 @@ class Mario:
                 aux[1] = True
         aux = tuple(aux)
         return aux
+    def rebote(self):
+        """Aplica una pequeña velocidad hacia arriba para dar la ilusión de rebote"""
+        self.velocidad[1] = -3
 
     def update(self):
         """Ejecuta todas las funciones de mario en el orden adecuado para su funcionamiento"""

@@ -72,7 +72,8 @@ class Tablero:
 
     def generarEnemigo(self):
         """Función encargada de generar enemigos con un límite de 4 a la vez en la pantalla"""
-        i = randint(1, 10)
+        i = randint(1, 9)
+        i *= 13
         if pyxel.frame_count % i == 0:
             # Genera un enemigo (25% koopa 75% goomba)
             a = random()
@@ -96,6 +97,7 @@ class Tablero:
             if enemigo.position[0] < -16 or enemigo.position[1] >= 256:
                 self.enemigos.remove(enemigo)
 
+
     def reiniciar(self):
         """Reinicio del nivel"""
         self.__init__(constantes.WIDTH, constantes.HEIGHT, constantes.VELOCIDAD, constantes.X)
@@ -105,12 +107,21 @@ class Tablero:
         if bloque.x < - 16:
             self.bloques.remove(bloque)
 
+    # INTERACCIONES CON MARIO
     def interaccionMarioBloque(self, bloque):
         """Función que aplica la transformación adecuada a un bloque según su interación con mario"""
-        if bloque.sprite == constantes.SPRITE_BLOQUE and self.mario.estado >= 0:
+        if bloque.sprite == constantes.SPRITE_BLOQUE and self.mario.estado >= 1:
             self.bloques.remove(bloque)
         if bloque.sprite == constantes.SPRITE_INTERR:
             bloque.cambioBloqueLiso()
+    def interaccionMarioEnemigo(self, enemigo, colision):
+        """Función que aplica las operaciones adecuadas a un enemigo si este choca con mario"""
+        if colision[0]:
+            if colision[1]:
+                self.enemigos.remove(enemigo)
+                self.mario.rebote()
+            else:
+                self.mario.estado -= 1
 
     def update(self):
         """Ejecuta todos los métodos en el orden correcto"""
@@ -118,8 +129,7 @@ class Tablero:
         self.interfaz.update()
 
         # Generar enemigos
-        if pyxel.frame_count % 30 == 0:
-            self.generarEnemigo()
+        self.generarEnemigo()
 
         # == bucles de bloques y enemigos ==
         for bloque in self.bloques:
@@ -132,12 +142,14 @@ class Tablero:
             for enemigo in self.enemigos:
                 # colisión enemigo-bloque
                 enemigo.colisionBloque(bloque.colision2(enemigo))
+
         # == bucle de monedas ==
 
         # Update de enemigo (debe ir en un bucle separado porque el anterior hizo todos los cálculos necesarios para el
         # enemigo: colisiones, __suelo. Esta función ahora se encarga de trabajar con esos datos)
         for enemigo in self.enemigos:
             enemigo.update()
+            self.interaccionMarioEnemigo(enemigo, self.mario.colisionEntidad(enemigo))
         # Tras haber hecho las operaciones correspondientes con cada enemigo, se pude borrar? Función encargada de eso
         self.borrarEnemigo()
         # update estado de mario
