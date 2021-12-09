@@ -163,17 +163,21 @@ class Mario:
             elif self.estado > 0:
                 self.velocidad[1] -= 2.25
 
+    def controlSprite(self):
+        if self.estado >= 1:
+            self.sprite[4] = 32
+        elif self.estado < 1:
+            self.sprite[4] = 16
+
     def animacionCaminar(self):
         """Controla los sprites de mario en los movimientos básicos, los sprites están organizados por columnas. Las
         funciones de dirección establecen qué columna usamos y esta función define cual de las skins"""
         # animación de caminar si está en el __suelo y la dirección y el sentido de la velocidad coinciden. Si no
         # coinciden significa que todavía se está ejecutando el freno activo (skin propia)
         i = 1
+        if self.estado >= 1:
+            i = 2
         if self.__en_suelo and self.__direccion * self.velocidad[0] >= 0:
-            if self.estado <= 0:
-                i = 1
-            elif self.estado >= 1:
-                i = 2
             self.sprite[2] = 16 * i
             if self.velocidad[0] != 0:
                 # cada periodo de 5 frames cambia de sprite
@@ -194,6 +198,11 @@ class Mario:
         """esta función recibe la lista de booleanos de la función colisión de los bloques y actúa en consecuencia
         Si ha colisionado por abajo devuelve un booleano que el método interaccionMarioBloque de tablero usará para
         aplicar las transformaciones adecuadas a los bloques"""
+        # suelo por defecto
+        if self.estado >= 1:
+            defecto = 192
+        else:
+            defecto = 208
         # COLISIÓN VERTICAL POR ARRIBA
         # inmediatamente encima
         control = True
@@ -203,10 +212,10 @@ class Mario:
         # derecha
         if not boolList[0] and not boolList[1]:
             self.clearAlturas()
-            self.__suelo = 208
+            self.__suelo = defecto
         # izquierda (se ponen derecha e izquierda por separado para que no interactúen mal entre bloques)
         elif boolList[0]:
-            self.__suelo = 208
+            self.__suelo = defecto
 
         # En caso de que haya varias alturas posibles, cogemos la más cercana a mario
         if len(self.__trues_alturas) > 0:
@@ -261,6 +270,7 @@ class Mario:
             self.__frames_desde_colision = 0
 
     def dannont(self):
+        """Aumenta el estado de Mario, la salud"""
         self.estado += 1
 
     def conteoFramesColision(self):
@@ -289,6 +299,7 @@ class Mario:
         self.gravedad()
         self.conteoFramesColision()
         self.cambiarTamanio()
+        self.controlSprite()
         self.cuerpoTierra()
         self.clearAlturas()
 
@@ -296,5 +307,5 @@ class Mario:
         """Dibuja a mario"""
         pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=0)
         # menú debug
-        pyxel.text(0, 15, "%s\n%s, %s\n%s\n%s\n%s" % (
-        self.position, self.velocidad[0], self.velocidad[1], self.estado, self.__frames_desde_colision, self.sprite), 0)
+        # pyxel.text(0, 15, "%s\n%s, %s\n%s\n%s\n%s" % (
+        # self.position, self.velocidad[0], self.velocidad[1], self.estado, self.__frames_desde_colision, self.sprite), 0)

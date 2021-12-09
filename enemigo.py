@@ -134,5 +134,5 @@ class Enemigo:
         else:
             pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=10)
         # Info de debug
-        pyxel.text(0, 50, "%s\n%s, %s\n%s\n %s" % (
-            self.position, self.velocidad[0], self.velocidad[1], self.__trues_alturas, self.suelo), 0)
+        # pyxel.text(0, 50, "%s\n%s, %s\n%s\n %s" % (
+            # self.position, self.velocidad[0], self.velocidad[1], self.__trues_alturas, self.suelo), 0)

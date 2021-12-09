@@ -9,6 +9,8 @@ from random import random
 from objetos import Objeto
 
 class Tablero:
+    """Este módulo recoge lo que ha de ser colocado en pantalla, así como la interacción entre objetos y la lógica del
+    juego"""
     def __init__(self, w, h, velocidad, x):
         self.w: int = w
         self.h: int = h
@@ -19,7 +21,6 @@ class Tablero:
         # Lista de enemigos, de momento sólo he metido y colocado el primero
         self.enemigos: list = []
         self.bloques: list = []
-        self.monedas: list = []
         self.objetos: list = []
         # Lista de bloues, en el módulo de constantes están los datos para inicializar
         for _ in constantes.POSICION_BLOQUES:
@@ -165,8 +166,11 @@ class Tablero:
                 self.mario.dannont()
             elif objeto.sprite == constantes.SPRITE_1UP:
                 self.interfaz.sumaVida()
-            else:
+            elif objeto.sprite == constantes.SPRITE_MONEDA:
+                self.interfaz.sumarMonedas()
                 self.interfaz.sumarPuntuacion(200)
+            else:
+                self.interfaz.sumarPuntuacion(1000)
             self.objetos.remove(objeto)
 
 
@@ -216,8 +220,6 @@ class Tablero:
         pyxel.bltm(self.x, 0, 0, 0, 32, 256, 256)
         # Interfaz
         self.interfaz.draw()
-        pyxel.text(5, 244, str(self.objetos), 0)
-        #print(self.objetos)
         # Mario
         self.mario.draw()
         # Enemigos
