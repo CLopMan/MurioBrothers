@@ -72,9 +72,9 @@ class Tablero:
 
     def generarEnemigo(self):
         """Función encargada de generar enemigos con un límite de 4 a la vez en la pantalla"""
-        i = randint(1, 9)
-        i *= 13
-        if pyxel.frame_count % i == 0:
+        primos = (1, 2, 3, 5, 7, 9, 11, 13, 17, 19, 23)
+        i = randint(0, 10)
+        if pyxel.frame_count % primos[i] == 0:
             # Genera un enemigo (25% koopa 75% goomba)
             a = random()
             b = constantes.SPRITE_GOOMBA
@@ -114,6 +114,7 @@ class Tablero:
             self.bloques.remove(bloque)
         if bloque.sprite == constantes.SPRITE_INTERR:
             bloque.cambioBloqueLiso()
+
     def interaccionMarioEnemigo(self, enemigo, colision):
         """Función que aplica las operaciones adecuadas a un enemigo si este choca con mario"""
         if colision[0]:
@@ -121,7 +122,8 @@ class Tablero:
                 self.enemigos.remove(enemigo)
                 self.mario.rebote()
             else:
-                self.mario.estado -= 1
+                # función para bajar la vida a mario
+                pass
 
     def update(self):
         """Ejecuta todos los métodos en el orden correcto"""

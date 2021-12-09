@@ -256,5 +256,5 @@ class Mario:
         """Dibuja a mario"""
         pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=0)
         # menú debug
-        # pyxel.text(0, 15, "%s\n%s, %s\n%s\n%s\n%s" % (
-        # self.position, self.velocidad[0], self.velocidad[1], self.__frames_aire, self.__en_suelo, self.sprite), 0)
+        pyxel.text(0, 15, "%s\n%s, %s\n%s\n%s\n%s" % (
+        self.position, self.velocidad[0], self.velocidad[1], self.estado, self.__en_suelo, self.sprite), 0)
