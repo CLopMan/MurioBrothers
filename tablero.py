@@ -6,7 +6,7 @@ from enemigo import Enemigo
 from bloque import Bloque
 from random import randint
 from random import random
-
+from objetos import Objeto
 
 class Tablero:
     def __init__(self, w, h, velocidad, x):
@@ -20,6 +20,7 @@ class Tablero:
         self.enemigos: list = []
         self.bloques: list = []
         self.monedas: list = []
+        self.objetos: list = []
         # Lista de bloues, en el módulo de constantes están los datos para inicializar
         for _ in constantes.POSICION_BLOQUES:
             self.bloques.append(Bloque(*_))
@@ -38,10 +39,12 @@ class Tablero:
                 moverpx = self.mario.velocidad[0]
             self.x -= moverpx
             # si se mueve el escenario también se mueven los bloques y enemigos
-            for bloque in (self.bloques):
+            for bloque in self.bloques:
                 bloque.move(moverpx)
             for enemigo in self.enemigos:
                 enemigo.move(moverpx)
+            for objt in self.objetos:
+                objt.move(moverpx)
         else:
             self.x = -1784
 
@@ -97,7 +100,11 @@ class Tablero:
             if enemigo.position[0] < -16 or enemigo.position[1] >= 256:
                 self.enemigos.remove(enemigo)
 
-
+    def borrarObjeto(self):
+        """Función encargada de eliminar un enemigo si este se sale por la izquierda"""
+        for objeto in self.objetos:
+            if objeto.position[1] >= 256:
+                self.objetos.remove(objeto)
     def reiniciar(self):
         """Reinicio del nivel"""
         self.__init__(constantes.WIDTH, constantes.HEIGHT, constantes.VELOCIDAD, constantes.X)
@@ -112,18 +119,56 @@ class Tablero:
         """Función que aplica la transformación adecuada a un bloque según su interación con mario"""
         if bloque.sprite == constantes.SPRITE_BLOQUE and self.mario.estado >= 1:
             self.bloques.remove(bloque)
-        if bloque.sprite == constantes.SPRITE_INTERR:
+        if bloque.sprite == constantes.SPRITE_INTERR or bloque.sprite == constantes.INVISIBLE:
+            if bloque.sprite == constantes.INVISIBLE:
+                self.objetos.append(Objeto(bloque.x, bloque.y - 16, constantes.SPRITE_1UP, bloque.y - 16))
+            else:
+                posibilidad = random()
+                if posibilidad > 0.5:
+                    self.objetos.append(Objeto(bloque.x, bloque.y - 16, constantes.SPRITE_CHAMPINON, bloque.y - 16))
+                else:
+                    self.objetos.append(Objeto(bloque.x, bloque.y - 16, constantes.SPRITE_MONEDA, bloque.y - 16))
             bloque.cambioBloqueLiso()
 
+    # Cuarentena
+    # interacción teniendo en cuenta el caparazón del koopa como proyectil. La idea no terminó de cuajar
+    """def interaccionMarioEnemigo(self, enemigo, colision):
+       Función que aplica las operaciones adecuadas a un enemigo si este choca con mario
+        if colision[0]:
+            if colision[1] and enemigo.sprite != constantes.SPRITE_CAPARAZON:
+                enemigo.velocidad[0] = 0
+                if enemigo.sprite == constantes.SPRITE_KOOPA or enemigo.sprite == constantes.SPRITE_KOOPA_2:
+                    self.enemigos.append(Enemigo(enemigo.position[0], enemigo.position[1], enemigo.__suelo, constantes.SPRITE_CAPARAZON))
+                self.enemigos.remove(enemigo)
+                self.interfaz.sumarPuntuacion(100)
+                self.mario.rebote()
+            elif colision[1] and enemigo.sprite == constantes.SPRITE_CAPARAZON:
+                enemigo.velocidad[0] = 1
+                enemigo.movimientoCaparazon()
+                self.mario.rebote()
+            else:
+                self.mario.danno()"""
+    # Cuarentena
     def interaccionMarioEnemigo(self, enemigo, colision):
-        """Función que aplica las operaciones adecuadas a un enemigo si este choca con mario"""
         if colision[0]:
             if colision[1]:
                 self.enemigos.remove(enemigo)
+                self.interfaz.sumarPuntuacion(200)
+                self.interfaz.aparecerPuntuacion(self.mario, 200)
                 self.mario.rebote()
             else:
-                # función para bajar la vida a mario
-                pass
+                self.mario.danno()
+
+    def interaccionMarioObjeto(self, objeto, colision):
+        if colision[0]:
+            if objeto.sprite == constantes.SPRITE_CHAMPINON and self.mario.estado < 1:
+                self.mario.dannont()
+            elif objeto.sprite == constantes.SPRITE_1UP:
+                self.interfaz.sumaVida()
+            else:
+                self.interfaz.sumarPuntuacion(200)
+            self.objetos.remove(objeto)
+
 
     def update(self):
         """Ejecuta todos los métodos en el orden correcto"""
@@ -145,13 +190,19 @@ class Tablero:
                 # colisión enemigo-bloque
                 enemigo.colisionBloque(bloque.colision2(enemigo))
 
-        # == bucle de monedas ==
+            for objeto in self.objetos:
+                objeto.colisionBloque(bloque.colision2(objeto))
+                self.borrarObjeto()
+
 
         # Update de enemigo (debe ir en un bucle separado porque el anterior hizo todos los cálculos necesarios para el
         # enemigo: colisiones, __suelo. Esta función ahora se encarga de trabajar con esos datos)
         for enemigo in self.enemigos:
             enemigo.update()
             self.interaccionMarioEnemigo(enemigo, self.mario.colisionEntidad(enemigo))
+        for objeto in self.objetos:
+            objeto.update()
+            self.interaccionMarioObjeto(objeto, self.mario.colisionEntidad(objeto))
         # Tras haber hecho las operaciones correspondientes con cada enemigo, se pude borrar? Función encargada de eso
         self.borrarEnemigo()
         # update estado de mario
@@ -165,6 +216,8 @@ class Tablero:
         pyxel.bltm(self.x, 0, 0, 0, 32, 256, 256)
         # Interfaz
         self.interfaz.draw()
+        pyxel.text(5, 244, str(self.objetos), 0)
+        #print(self.objetos)
         # Mario
         self.mario.draw()
         # Enemigos
@@ -173,3 +226,6 @@ class Tablero:
         # bloques
         for bloque in self.bloques:
             bloque.draw()
+
+        for objeto in self.objetos:
+            objeto.draw()

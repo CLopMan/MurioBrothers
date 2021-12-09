@@ -27,6 +27,8 @@ class Mario:
         # PARÁMETROS DE CONTROL SOBRE ALGUNAS FUNCIONES
         # contador de frames en el aire
         self.__frames_aire: int = 0
+        # conteo de los frames desde la última colisión
+        self.__frames_desde_colision: int = 90
         # comprobación de que mario está en el __suelo
         self.__en_suelo: bool = True
         # Posibles suelos de mario
@@ -72,7 +74,10 @@ class Mario:
     # métodos para direcciones. Se usan sumas para que puedas pulsar varios botones a la vez y te quedes quieto
     def direccion_right(self):
         """Cambia la __direccion hacia la derecha"""
-        self.sprite[1] = 64
+        if self.estado == 0:
+            self.sprite[1] = 64
+        elif self.estado == 1:
+            self.sprite[1] = 96
         # sprite de frenado en caso de que vengamos de otra __direccion
         if self.velocidad[0] < 0:
             self.sprite[2] = 0
@@ -80,7 +85,10 @@ class Mario:
 
     def direccion_left(self):
         """varía la dirección a la izquierda"""
-        self.sprite[1] = 80
+        if self.estado == 0:
+            self.sprite[1] = 80
+        elif self.estado == 1:
+            self.sprite[1] = 112
         # sprite de frenado si venimos de la otra __direccion
         if self.velocidad[0] > 0:
             self.sprite[2] = 0
@@ -150,25 +158,33 @@ class Mario:
         """Establece una aceleración vertical durante un máximo de 7 frames en los que se mantenga pulsada la tecla
         correspondiente. Con esto permitimos que haya 7 alturas de salto dependiendo de cuánto se pulso el botón"""
         if self.__en_suelo or self.__frames_aire < 4:
-            self.velocidad[1] -= 2
+            if self.estado <= 0:
+                self.velocidad[1] -= 2
+            elif self.estado > 0:
+                self.velocidad[1] -= 2.25
 
     def animacionCaminar(self):
         """Controla los sprites de mario en los movimientos básicos, los sprites están organizados por columnas. Las
         funciones de dirección establecen qué columna usamos y esta función define cual de las skins"""
         # animación de caminar si está en el __suelo y la dirección y el sentido de la velocidad coinciden. Si no
         # coinciden significa que todavía se está ejecutando el freno activo (skin propia)
+        i = 1
         if self.__en_suelo and self.__direccion * self.velocidad[0] >= 0:
-            self.sprite[2] = 16
+            if self.estado <= 0:
+                i = 1
+            elif self.estado >= 1:
+                i = 2
+            self.sprite[2] = 16 * i
             if self.velocidad[0] != 0:
                 # cada periodo de 5 frames cambia de sprite
                 if pyxel.frame_count % 10 < 5:
-                    self.sprite[2] = 32
+                    self.sprite[2] = 32 * i
             # parado
             else:
-                self.sprite[2] = 16
+                self.sprite[2] = 16 * i
         # si está en el aire salta
         elif not self.__en_suelo:
-            self.sprite[2] = 48
+            self.sprite[2] = 48 * i
 
     def clearAlturas(self):
         """Vacía el parámetros de las posibles alturas en las que mario se puede posar"""
@@ -237,9 +253,31 @@ class Mario:
                 aux[1] = True
         aux = tuple(aux)
         return aux
+
+    def danno(self):
+        """Hace daño a Mario si los frames de inencibilidad son menores a 90"""
+        if self.__frames_desde_colision >= 90:
+            self.estado -= 1
+            self.__frames_desde_colision = 0
+
+    def dannont(self):
+        self.estado += 1
+
+    def conteoFramesColision(self):
+        """Cuenta los frames desde la última colisión para aplicar una cierta invulnerabilidad a Mario"""
+        if self.__frames_desde_colision < 90:
+            self.__frames_desde_colision += 1
+
     def rebote(self):
         """Aplica una pequeña velocidad hacia arriba para dar la ilusión de rebote"""
-        self.velocidad[1] = -3
+        self.velocidad[1] = -6
+
+    def cambiarTamanio(self):
+        """Cambia el tamaño de Mario según el estado de Mario"""
+        if self.estado == 0:
+            self.size = [16, 16]
+        elif self.estado > 0:
+            self.size = [16, 32]
 
     def update(self):
         """Ejecuta todas las funciones de mario en el orden adecuado para su funcionamiento"""
@@ -249,6 +287,8 @@ class Mario:
         self.animacionCaminar()
         self.movimiento()
         self.gravedad()
+        self.conteoFramesColision()
+        self.cambiarTamanio()
         self.cuerpoTierra()
         self.clearAlturas()
 
@@ -257,4 +297,4 @@ class Mario:
         pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=0)
         # menú debug
         pyxel.text(0, 15, "%s\n%s, %s\n%s\n%s\n%s" % (
-        self.position, self.velocidad[0], self.velocidad[1], self.estado, self.__en_suelo, self.sprite), 0)
+        self.position, self.velocidad[0], self.velocidad[1], self.estado, self.__frames_desde_colision, self.sprite), 0)

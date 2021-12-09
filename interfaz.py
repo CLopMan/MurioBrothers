@@ -20,9 +20,18 @@ class Interfaz:
         """Resta una vida a mario"""
         self.valores[5] -= 1
 
+    def sumaVida(self):
+        """Suma una vida a mario"""
+        self.valores[5] += 1
+
     def sumarPuntuacion(self, valor):
         """Suma x puntos al marcador de Mario"""
         self.valores[0] += valor
+
+    def aparecerPuntuacion(self, other, valor):
+        """Hace aparecer la puntuación"""
+        #if pyxel.frame_count % 15 == 0:
+        pyxel.text(other.position[0] + 16, other.position[1] - 48, str(valor), 7)
 
     def sumarMonedas(self):
         """Suma 1 al contador de monedas"""
@@ -40,3 +49,4 @@ class Interfaz:
         pyxel.blt(148, 2, *constantes.SPRITE_1UP, colkey=0)
         pyxel.text(164, 5, "x %i" %self.valores[5], 7)
         pyxel.text(220, 5, "TIME: %i" %self.valores[1], 7)
+
