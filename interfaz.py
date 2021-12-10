@@ -7,14 +7,15 @@ class Interfaz:
         self.valores: list = [score, time, monedas, nivel, mundo, vidas]
         self.final_timer: bool = False
 
-    def timer(self):
+    def timer(self  ):
         """Contador del tiempo"""
         # Si el tiempo es mayor a 0 resta 1 por cada 30 frames (1 s)
         if self.valores[1] > 0:
             if pyxel.frame_count % 30 == 0:
                 self.valores[1] -= 1
         if self.valores[1] == 0:
-            self.final_timer = True
+            print("se acabó el tiempo")
+            return True
 
     def restarVidas(self):
         """Resta una vida a mario"""

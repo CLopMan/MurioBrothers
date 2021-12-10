@@ -229,7 +229,7 @@ class Mario:
         # debajo (si está inmediatamente debajo)
         if boolList[1]:
             if self.velocidad[1] < 0 and 0 > (boolList[4] - self.position[1]) > -16:
-                self.velocidad[1] = 0.5
+                self.velocidad[1] = 0
                 self.position[1] = boolList[4] + 16
                 control = False
                 return True

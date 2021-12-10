@@ -11,13 +11,14 @@ from objetos import Objeto
 class Tablero:
     """Este módulo recoge lo que ha de ser colocado en pantalla, así como la interacción entre objetos y la lógica del
     juego"""
-    def __init__(self, w, h, velocidad, x):
+    def __init__(self, w, h, velocidad, x, intentos):
         self.w: int = w
         self.h: int = h
         # posición en x de la cámara
         self.x: float = x
         self.velocidad: float = velocidad
-        self.interfaz: Interfaz = Interfaz(0, 500, 0, 1, 1, 3)
+        self.intentos = 0 + intentos
+        self.interfaz: Interfaz = Interfaz(0, 500, 0, 1, 1, 3 - intentos)
         # Lista de enemigos, de momento sólo he metido y colocado el primero
         self.enemigos: list = []
         self.bloques: list = []
@@ -108,7 +109,7 @@ class Tablero:
                 self.objetos.remove(objeto)
     def reiniciar(self):
         """Reinicio del nivel"""
-        self.__init__(constantes.WIDTH, constantes.HEIGHT, constantes.VELOCIDAD, constantes.X)
+        self.__init__(constantes.WIDTH, constantes.HEIGHT, constantes.VELOCIDAD, constantes.X, self.intentos + 1)
 
     def borrarBloque(self, bloque):
         """Función encargada de borrar bloques que se salen por la izquierda"""
@@ -178,7 +179,13 @@ class Tablero:
         """Ejecuta todos los métodos en el orden correcto"""
         # Interfaz (tiempo, monedas, vidas...)
         self.interfaz.update()
-
+        # Cierra el juego si mario vidas = 0
+        if self.interfaz.valores[5] == 0:
+            print("Moriste wey")
+            pyxel.quit()
+        # reinicia el nivel si mario muere o si se acaba el tiempo
+        if self.mario.estado <= -1 or self.interfaz.timer():
+            self.reiniciar()
         # Generar enemigos
         self.generarEnemigo()
 
@@ -197,7 +204,6 @@ class Tablero:
             for objeto in self.objetos:
                 objeto.colisionBloque(bloque.colision2(objeto))
                 self.borrarObjeto()
-
 
         # Update de enemigo (debe ir en un bucle separado porque el anterior hizo todos los cálculos necesarios para el
         # enemigo: colisiones, __suelo. Esta función ahora se encarga de trabajar con esos datos)
