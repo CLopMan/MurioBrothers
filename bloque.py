@@ -1,9 +1,9 @@
 import pyxel
-
 import constantes
 
 
 class Bloque():
+    """En esta clase están las funciones de los bloques"""
     def __init__(self, x, y, sprite):
         self.x: int = x
         self.y: int = y

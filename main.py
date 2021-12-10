@@ -9,27 +9,29 @@ tablero = Tablero(constantes.WIDTH, constantes.HEIGHT, constantes.VELOCIDAD, con
 
 
 def update():
+    """Actualiza constantemente el programa"""
     # Para salir del programa
     if pyxel.btnp(pyxel.KEY_Q):
         pyxel.quit()
+    # Inputs
     tablero.inputs()
     tablero.update()
 
 
 def draw():
-    # fondo
+    # Fondo
     pyxel.cls(0)
     tablero.draw()
 
 
 # Título de la ventana
-CAPTION = "MARIO BROSS"
+CAPTION = "MARIO BROS"
 
-# inicialización de ventana
-pyxel.init(tablero.w, tablero.h, caption=CAPTION)
+# Inicialización de ventana
+pyxel.init(tablero.w, tablero.h, caption=CAPTION, fullscreen=True)
 
 # Carga de imágenes
 pyxel.load("mario_assets.pyxres")
 
-# ejecución del juego
+# Ejecución del juego
 pyxel.run(update, draw)

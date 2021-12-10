@@ -7,7 +7,7 @@ class Interfaz:
         self.valores: list = [score, time, monedas, nivel, mundo, vidas]
         self.final_timer: bool = False
 
-    def timer(self  ):
+    def timer(self):
         """Contador del tiempo"""
         # Si el tiempo es mayor a 0 resta 1 por cada 30 frames (1 s)
         if self.valores[1] > 0:
