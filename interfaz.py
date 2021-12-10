@@ -16,6 +16,8 @@ class Interfaz:
         if self.valores[1] == 0:
             print("se acabó el tiempo")
             return True
+        else:
+            return False
 
     def restarVidas(self):
         """Resta una vida a mario"""
@@ -40,7 +42,7 @@ class Interfaz:
 
     def update(self):
         """Update de la interfaz"""
-        self.timer()
+        self.final_timer = self.timer()
 
     def draw(self):
         """Dibujo de la interfaz"""

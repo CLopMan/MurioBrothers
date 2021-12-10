@@ -12,7 +12,7 @@ from objetos import Objeto
 class Tablero:
     """Este módulo recoge lo que ha de ser colocado en pantalla, así como la interacción entre objetos y la lógica del
     juego"""
-    def __init__(self, w: int, h: int, velocidad: list, x: float, intentos: int):
+    def __init__(self, w: int, h: int, velocidad: int, x: float, intentos: int):
         """Función para inicializar el tablero.
         @param w: ancho de la pantalla
         @param h: alto de la pantalla
@@ -200,6 +200,7 @@ class Tablero:
             # Si objeto con el que colisiona es un 1-up
             elif objeto.sprite == constantes.SPRITE_1UP:
                 self.interfaz.sumaVida()
+                self.intentos -= 1
             # Si con el que colisiona es una moneda
             elif objeto.sprite == constantes.SPRITE_MONEDA:
                 self.interfaz.sumarMonedas()
@@ -220,7 +221,7 @@ class Tablero:
             print("Moriste wey")
             pyxel.quit()
         # Reinicia el nivel si mario muere o si se acaba el tiempo. También se reinicia si mario se cae
-        if self.mario.estado <= -1 or self.interfaz.timer() or self.mario.position[1] >= 255:
+        if self.mario.estado <= -1 or self.interfaz.final_timer or self.mario.position[1] >= 255:
             self.reiniciar()
         # Generar enemigos
         self.generarEnemigo()
