@@ -78,4 +78,4 @@ class Objeto:
         self.cuerpoTierra()
 
     def draw(self):
-        pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=0)
+        pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=12)
