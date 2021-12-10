@@ -1,6 +1,6 @@
 import pyxel
 import constantes
-
+from objetos import Objeto
 
 class Mario:
     """Personaje principal, conjunto de todos los parámetros necesiarios"""
@@ -75,22 +75,14 @@ class Mario:
     # Métodos para direcciones. Se usan sumas para que puedas pulsar varios botones a la vez y te quedes quieto
     def direccion_right(self):
         """Cambia la __direccion hacia la derecha"""
-        if self.estado == 0:
-            self.sprite[1] = 64
-        elif self.estado == 1:
-            self.sprite[1] = 96
-        # Sprite de frenado en caso de que vengamos de otra __direccion
+        # sprite para frenar
         if self.velocidad[0] < 0:
             self.sprite[2] = 0
         self.__direccion += 1
 
     def direccion_left(self):
         """varía la dirección a la izquierda"""
-        if self.estado == 0:
-            self.sprite[1] = 80
-        elif self.estado == 1:
-            self.sprite[1] = 112
-        # Sprite de frenado si venimos de la otra __direccion
+        # sprite para frenar
         if self.velocidad[0] > 0:
             self.sprite[2] = 0
         self.__direccion -= 1
@@ -173,11 +165,28 @@ class Mario:
     def animacionCaminar(self):
         """Controla los sprites de mario en los movimientos básicos, los sprites están organizados por columnas. Las
         funciones de dirección establecen qué columna usamos y esta función define cual de las skins"""
-        # Animación de caminar si está en el __suelo y la dirección y el sentido de la velocidad coinciden. Si no
-        # Coinciden significa que todavía se está ejecutando el freno activo (skin propia)
+        # Multiplicador para aplicar los números correctos según sea grande o pequeño
         i = 1
         if self.estado >= 1:
             i = 2
+
+        # Sprites para mirar a la derecha o la izquierda
+        # Derecha
+        if self.__direccion == 1:
+            if self.estado == 0:
+                self.sprite[1] = 64
+            elif self.estado == 1:
+                self.sprite[1] = 96
+        #Izquierda
+        elif self.__direccion == -1:
+            if self.estado == 0:
+                self.sprite[1] = 80
+            elif self.estado == 1:
+                self.sprite[1] = 112
+
+        # Animación de caminar
+        # Pasos. Si la velocidad y la dirección son en sentidos contrario se pone el sprite de
+        # frenar (métodos de direccion)
         if self.__en_suelo and self.__direccion * self.velocidad[0] >= 0:
             self.sprite[2] = 16 * i
             if self.velocidad[0] != 0:
@@ -191,9 +200,10 @@ class Mario:
         elif not self.__en_suelo:
             self.sprite[2] = 48 * i
 
+
     def clearAlturas(self):
         """Vacía el parámetros de las posibles alturas en las que mario se puede posar"""
-        self.__trues_alturas = list()
+        self.__trues_alturas.clear()
 
     def colisionBloque(self, boolList: list):
         """Esta función recibe la lista de booleanos de la función colisión de los bloques y actúa en consecuencia
@@ -266,12 +276,18 @@ class Mario:
     def danno(self):
         """Hace daño a Mario si los frames de inencibilidad son menores a 90"""
         if self.__frames_desde_colision >= 90:
+            # actualiza el sprite
+            if self.estado >= 1:
+                self.sprite[1] -= 32
             self.estado -= 1
             self.__frames_desde_colision = 0
+
 
     def dannont(self):
         """Aumenta el estado de Mario, la salud"""
         self.estado += 1
+        # actualiza el sprite
+        self.sprite[1] += 32
 
     def conteoFramesColision(self):
         """Cuenta los frames desde la última colisión para aplicar una cierta invulnerabilidad a Mario"""
