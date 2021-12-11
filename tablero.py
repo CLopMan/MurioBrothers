@@ -180,7 +180,6 @@ class Tablero:
                 # Elimina el enemigo y suma puntuación. Luego hace que mario rebote
                 self.enemigos.remove(enemigo)
                 self.interfaz.sumarPuntuacion(200)
-                self.interfaz.aparecerPuntuacion(self.mario, 200)
                 self.mario.rebote()
             # Si Mario está debajo del enemigo
             else:
