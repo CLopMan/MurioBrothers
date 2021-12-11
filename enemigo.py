@@ -113,7 +113,7 @@ class Enemigo:
     def animacionCaminar(self):
         if self.sprite == constantes.SPRITE_GOOMBA or self.sprite == constantes.SPRITE_GOOMBA_2:
             self.sprite = constantes.SPRITE_GOOMBA
-            # cada periodo de 5 frames cambia de sprite
+            # Cada periodo de 5 frames cambia de sprite
             if pyxel.frame_count % 10 < 5:
                 self.sprite = constantes.SPRITE_GOOMBA_2
 

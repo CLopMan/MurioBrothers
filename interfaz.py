@@ -13,6 +13,7 @@ class Interfaz:
         if self.valores[1] > 0:
             if pyxel.frame_count % 30 == 0:
                 self.valores[1] -= 1
+        # Si el tiempo se acaba devuelve un True
         if self.valores[1] == 0:
             print("se acabó el tiempo")
             return True
@@ -30,11 +31,6 @@ class Interfaz:
     def sumarPuntuacion(self, valor):
         """Suma x puntos al marcador de Mario"""
         self.valores[0] += valor
-
-    def aparecerPuntuacion(self, other, valor):
-        """Hace aparecer la puntuación"""
-        #if pyxel.frame_count % 15 == 0:
-        pyxel.text(other.position[0] + 16, other.position[1] - 48, str(valor), 7)
 
     def sumarMonedas(self):
         """Suma 1 al contador de monedas"""

@@ -114,6 +114,7 @@ class Mario:
         # Comprobación del borde izquierdo
         if 240 >= self.position[0] > 0:
             self.position[0] += self.velocidad[0]
+        # Evita que Mario se salga por la pantalla
         elif self.position[0] > 240:
             self.position[0] = 240
             self.velocidad[0] = 0
@@ -157,6 +158,7 @@ class Mario:
                 self.velocidad[1] -= 2.25
 
     def controlSprite(self):
+        """Controla el sprite de Mario en función a su estado"""
         if self.estado >= 1:
             self.sprite[4] = 32
         elif self.estado < 1:
@@ -169,7 +171,6 @@ class Mario:
         i = 1
         if self.estado >= 1:
             i = 2
-
         # Sprites para mirar a la derecha o la izquierda
         # Derecha
         if self.__direccion == 1:
@@ -177,7 +178,7 @@ class Mario:
                 self.sprite[1] = 64
             elif self.estado == 1:
                 self.sprite[1] = 96
-        #Izquierda
+        # Izquierda
         elif self.__direccion == -1:
             if self.estado == 0:
                 self.sprite[1] = 80
@@ -199,7 +200,6 @@ class Mario:
         # Si está en el aire salta
         elif not self.__en_suelo:
             self.sprite[2] = 48 * i
-
 
     def clearAlturas(self):
         """Vacía el parámetros de las posibles alturas en las que mario se puede posar"""
@@ -322,6 +322,4 @@ class Mario:
     def draw(self):
         """Dibuja a mario"""
         pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=0)
-        # menú debug
-        # pyxel.text(0, 15, "%s\n%s, %s\n%s\n%s\n%s" % (
-        # self.position, self.velocidad[0], self.velocidad[1], self.estado, self.__frames_desde_colision, self.sprite), 0)
+

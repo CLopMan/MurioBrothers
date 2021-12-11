@@ -3,7 +3,6 @@ import constantes
 
 
 class Objeto:
-
     def __init__(self, x, y, sprite, suelo):
         self.position: list = [x, y]
         self.velocidad: list = [constantes.VELOCIDAD_OBJETO, 0]
@@ -75,7 +74,9 @@ class Objeto:
         self.position[0] += self.__dir * self.velocidad[0] - valor
 
     def update(self):
+        """Update funciones de los objetos"""
         self.cuerpoTierra()
 
     def draw(self):
+        """Dibuja los objeteos"""
         pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=12)

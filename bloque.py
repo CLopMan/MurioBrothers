@@ -33,6 +33,7 @@ class Bloque():
         return aux
 
     def cambioBloqueLiso(self):
+        """Cambia el sprite de un bloque"""
         self.sprite = constantes.SPRITE_LISO
 
     def draw(self):
