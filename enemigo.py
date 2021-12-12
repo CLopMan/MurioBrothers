@@ -122,7 +122,7 @@ class Enemigo:
                 self.sprite = constantes.SPRITE_KOOPA
             else:
                 self.sprite = constantes.SPRITE_KOOPA_2
-                
+
     def update(self):
         """Update enemigo"""
         self.animacionCaminar()

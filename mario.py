@@ -184,7 +184,6 @@ class Mario:
                 self.sprite[1] = 80
             elif self.estado == 1:
                 self.sprite[1] = 112
-
         # Animación de caminar
         # Pasos. Si la velocidad y la dirección son en sentidos contrario se pone el sprite de
         # frenar (métodos de direccion)
