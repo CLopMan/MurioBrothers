@@ -11,10 +11,11 @@ class Interfaz:
         @param vidas: vidas restantes de mario
         """
         self.valores: list = [score, time, monedas, vidas]
+        self.final_timer = False
 
     # Atributos de sólo lectura
     @property
-    def SinVidas(self):
+    def sinVidas(self):
         """Bool que indica si Mario no tiene más vidas"""
         if self.valores[3] == 0:
             return True

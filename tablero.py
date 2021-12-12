@@ -228,7 +228,7 @@ class Tablero:
 
     # GENERAL
     def update(self):
-        if not self.final and not self.interfaz.SinVidas:
+        if not self.final and not self.interfaz.sinVidas:
             self.finalNivel()
             """Ejecuta todos los métodos en el orden correcto"""
             # Interfaz (tiempo, monedas, vidas...)
@@ -292,6 +292,6 @@ class Tablero:
             pyxel.text(80, 123,
                        "HAS GANADO, ENHORABUENA.\n\nPulsa la tecla R para comenzar de nuevo\n\n Score: " + str(
                            self.interfaz.valores[0]) + "\n\nPulsa la Q para salir", 7)
-        if self.interfaz.SinVidas:
+        if self.interfaz.sinVidas:
             pyxel.cls(0)
             pyxel.text(80, 123, "GAME OVER\n\n Pulsa la tecla R para comenzar de nuevo.\n\nPulsa la Q para salir", 7)
