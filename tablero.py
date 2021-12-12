@@ -38,12 +38,14 @@ class Tablero:
             self.bloques.append(Bloque(*_))
         # Lista de monedas que que aparecen en el mapa
         self.mario: Mario = Mario(*constantes.POSICION_INICIAL_M)
+        # atributo que comprueba si mario ha llegado al final
+        self.final = False
 
     def move(self):
         """movimiento de la camara. Si mario llega al límite de la pantalla se queda inmovil y se mueve el mapa con
         la misma velocidad"""
         # Límite del mapa
-        if self.x > -1784:
+        if self.x > -1792:
             # Scroll junto con todos los elementos dibujados en él
             moverpx = 0
             if self.mario.position[0] > 112:
@@ -59,7 +61,15 @@ class Tablero:
                 objeto.move(moverpx)
         # La cámara deja de moverse
         else:
-            self.x = -1784
+            self.x = -1792
+
+    def finalNivel(self):
+        """Función que comprueba si se ha llegado al final del nivel"""
+        # si llega al final del mapa
+        if self.x == -1792 and self.mario.position[0] > 128:
+            # borra la lista de enemigos y cambia el atributo del final
+            self.enemigos.clear()
+            self.final = True
 
     def inputs(self):
         """Recoge los distintas entradas del jugador"""
@@ -79,9 +89,9 @@ class Tablero:
         # Salto
         if pyxel.btn(pyxel.KEY_Z):
             self.mario.salto()
-        # Reinicio del nivel
+        # empezar de nuevo
         if pyxel.btnp(pyxel.KEY_R):
-            self.reiniciar()
+            self.__init__(constantes.WIDTH, constantes.HEIGHT, constantes.VELOCIDAD, constantes.X, 0)
 
     def reiniciar(self):
         """Reinicio del nivel"""
@@ -210,66 +220,71 @@ class Tablero:
             # Borra el objeto
             self.objetos.remove(objeto)
 
-
     def update(self):
-        """Ejecuta todos los métodos en el orden correcto"""
-        # Interfaz (tiempo, monedas, vidas...)
-        self.interfaz.update()
-        # Cierra el juego si mario vidas = 0
-        if self.interfaz.valores[5] == 0:
-            print("Moriste wey")
-            pyxel.quit()
-        # Reinicia el nivel si mario muere o si se acaba el tiempo. También se reinicia si mario se cae
-        if self.mario.estado <= -1 or self.interfaz.final_timer or self.mario.position[1] >= 255:
-            self.reiniciar()
-        # Generar enemigos
-        self.generarEnemigo()
-        # == Bucles de bloques y enemigos ==
-        for bloque in self.bloques:
-            # Colisión mario-bloque
-            if self.mario.colisionBloque(bloque.colision2(self.mario)):
-                self.interaccionMarioBloque(bloque)
-            # Si el bloque se sale de escena se borra
-            self.borrarBloque(bloque)
-            # Interacción con enemigos
-            for enemigo in self.enemigos:
-                # colisión enemigo-bloque
-                enemigo.colisionBloque(bloque.colision2(enemigo))
-            # Interaacción con objetos
-            for objeto in self.objetos:
-                # colisión objeto-bloque
-                objeto.colisionBloque(bloque.colision2(objeto))
-                self.borrarObjeto()
+        if not self.final:
+            self.finalNivel()
+            """Ejecuta todos los métodos en el orden correcto"""
+            # Interfaz (tiempo, monedas, vidas...)
+            self.interfaz.update()
+            # Cierra el juego si mario vidas = 0
+            if self.interfaz.valores[5] == 0:
+                print("Moriste wey")
+                pyxel.quit()
+            # Reinicia el nivel si mario muere o si se acaba el tiempo. También se reinicia si mario se cae
+            if self.mario.estado <= -1 or self.interfaz.final_timer or self.mario.position[1] >= 255:
+                self.reiniciar()
+            # Generar enemigos
+            self.generarEnemigo()
+            # == Bucles de bloques y enemigos ==
+            for bloque in self.bloques:
+                # Colisión mario-bloque
+                if self.mario.colisionBloque(bloque.colision2(self.mario)):
+                    self.interaccionMarioBloque(bloque)
+                # Si el bloque se sale de escena se borra
+                self.borrarBloque(bloque)
+                # Interacción con enemigos
+                for enemigo in self.enemigos:
+                    # colisión enemigo-bloque
+                    enemigo.colisionBloque(bloque.colision2(enemigo))
+                # Interaacción con objetos
+                for objeto in self.objetos:
+                    # colisión objeto-bloque
+                    objeto.colisionBloque(bloque.colision2(objeto))
+                    self.borrarObjeto()
 
-        # Update de enemigo (debe ir en un bucle separado porque el anterior hizo todos los cálculos necesarios para el
-        # enemigo: colisiones, __suelo. Esta función ahora se encarga de trabajar con esos datos)
-        for enemigo in self.enemigos:
-            enemigo.update()
-            self.interaccionMarioEnemigo(enemigo, self.mario.colisionEntidad(enemigo))
-        for objeto in self.objetos:
-            objeto.update()
-            self.interaccionMarioObjeto(objeto, self.mario.colisionEntidad(objeto))
-        # Tras haber hecho las operaciones correspondientes con cada enemigo comprueba si se puede borrar y lo borra
-        self.borrarEnemigo()
-        # Update estado de mario
-        self.mario.update()
-        # Scroll (movimiento del mapa y lo que está dibujado encima)
-        self.move()
+            # Update de enemigo (debe ir en un bucle separado porque el anterior hizo todos los cálculos necesarios para el
+            # enemigo: colisiones, __suelo. Esta función ahora se encarga de trabajar con esos datos)
+            for enemigo in self.enemigos:
+                enemigo.update()
+                self.interaccionMarioEnemigo(enemigo, self.mario.colisionEntidad(enemigo))
+            for objeto in self.objetos:
+                objeto.update()
+                self.interaccionMarioObjeto(objeto, self.mario.colisionEntidad(objeto))
+            # Tras haber hecho las operaciones correspondientes con cada enemigo comprueba si se puede borrar y lo borra
+            self.borrarEnemigo()
+            # Update estado de mario
+            self.mario.update()
+            # Scroll (movimiento del mapa y lo que está dibujado encima)
+            self.move()
 
     def draw(self):
         """Función encargada de dibujar el mapa y lo demás encima"""
-        # Fondo
-        pyxel.bltm(self.x, 0, 0, 0, 32, 256, 256)
-        # Interfaz
-        self.interfaz.draw()
-        # Mario
-        self.mario.draw()
-        # Enemigos
-        for enemigo in self.enemigos:
-            enemigo.draw()
-        # Bloques
-        for bloque in self.bloques:
-            bloque.draw()
-        # Objetos
-        for objeto in self.objetos:
-            objeto.draw()
+        if not self.final:
+            # Fondo
+            pyxel.bltm(self.x, 0, 0, 0, 32, 256, 256)
+            # Interfaz
+            self.interfaz.draw()
+            # Mario
+            self.mario.draw()
+            # Enemigos
+            for enemigo in self.enemigos:
+                enemigo.draw()
+            # Bloques
+            for bloque in self.bloques:
+                bloque.draw()
+            # Objetos
+            for objeto in self.objetos:
+                objeto.draw()
+        else:
+            pyxel.cls(0)
+            pyxel.text(80, 123, "HAS GANADO, ENHORABUENA.\n\npulsa la tecla R para comenzar de nuevo", 7)
