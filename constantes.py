@@ -1,11 +1,14 @@
 """ Módulo de constantes: datos iniciales, proporciones de la ventana, parámetros que no varían """
-# ==TABLERO==
+
+# TABLERO
 WIDTH = 256
 HEIGHT = 256
 X = 0
 VELOCIDAD = 0
 
-# ==ENEMIGOS==
+# =================================================
+
+# ENEMIGOS
 # Sprites de enemigos
 SPRITE_GOOMBA = (0, 0, 48, 16, 16)
 SPRITE_GOOMBA_2 = (0, 0, 64, 16, 16)
@@ -15,16 +18,19 @@ SPRITE_KOOPA_2 = (0, 48, 72, 16, 24)
 VELOCIDAD_ENEMIGOS = 1
 TAMANNO_ENEMIGOS = [16, 16]
 
-# ==MARIO==
+# =================================================
+
+# MARIO
 POSICION_INICIAL_M = (5, 208, 208, [16, 16], [0, 64, 16, 16, 16])
-# Para los dos siguientes parámentros el valor 0 corresponde con andar y el 1 con __correr
+# Para los siguientes parámentros el valor 0 corresponde con andar y el 1 con correr
 ACELERACION = (0.25, 0.5)
 VELOCIDAD_LIMITE = (2.5, 5)
 ROZAMIENTO = (0.125, 0.25)
 
+# =================================================
 
-# ==OBSTACULOS==
-# Sprites y posiciones de los bloques
+# OBSTÁCULOS
+# Sprites
 SPRITE_BLOQUE = (0, 32, 16, 16, 16)
 SPRITE_LISO = (0, 48, 16, 16, 16)
 SPRITE_DIAMANTE = (0, 16, 32, 16, 16)
@@ -36,6 +42,7 @@ SPRITE_TUBERIA_SUPIZQ = (0, 0, 80, 16, 16)
 BARRANCO = (0, 16, 0, 16, 16)
 INVISIBLE = (0, 32, 0, 16, 16)
 
+# Valores de inicialización de bloques
 POSICION_BLOQUES = (
     (304, 160, SPRITE_INTERR), (368, 160, SPRITE_BLOQUE), (384, 160, SPRITE_INTERR), (400, 160, SPRITE_BLOQUE),
     (400, 96, SPRITE_INTERR), (400, 160, SPRITE_BLOQUE), (416, 160, SPRITE_INTERR), (432, 160, SPRITE_BLOQUE),
@@ -64,16 +71,21 @@ POSICION_BLOQUES = (
     (1792, 144, SPRITE_DIAMANTE), (1808, 144, SPRITE_DIAMANTE), (1792, 128, SPRITE_DIAMANTE),
     (1808, 128, SPRITE_DIAMANTE), (1808, 112, SPRITE_DIAMANTE), (1920, 208, SPRITE_DIAMANTE))
 
-# ==Power-ups y monedas==
-# Sprites y posiciones de objetos
+# =================================================
+
+# OBJETOS
+# Sprites
 SPRITE_MONEDA = (0, 51, 34, 10, 12)
 SPRITE_1UP = (0, 32, 48, 16, 16)
 SPRITE_CHAMPINON = (0, 48, 48, 16, 16)
+# Valores de inicialización de objetos
 POSICION_OBJETOS = ((304, 144, SPRITE_MONEDA), (384, 144, SPRITE_CHAMPINON), (400, 96, SPRITE_MONEDA),
                     (416, 144, SPRITE_CHAMPINON), (800, 112, SPRITE_1UP),  (1136, 144, SPRITE_MONEDA),
                     (1392, 94, SPRITE_MONEDA), (1392, 144, SPRITE_MONEDA), (1616, 144, SPRITE_MONEDA))
 # Constantes objetos
 VELOCIDAD_OBJETO = 1
 
-# ==Generales==
+# =================================================
+
+# GENERALES
 GRAVEDAD = 0.65

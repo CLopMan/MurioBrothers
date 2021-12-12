@@ -21,27 +21,30 @@ class Tablero:
         @param x: posición del mapa
         @param intentos: entero que controla el número de veces que se ha reiniciado el nivel. Sirve para las vidas
         """
-        # Atributo que controla cuantas vida le quedan a Mario
+        # Atributo que controla el número de intentos del nivel
         self.intentos = 0 + intentos
         # Ancho y alto de la pantalla
         self.w: int = w
         self.h: int = h
-        # Posición en x de la cámara
+        # Posición y velocidad de la cámara
         self.x: float = x
         self.velocidad: float = velocidad
+
+        # Interfaz
         self.interfaz: Interfaz = Interfaz(0, 500, 0, 3 - intentos)
-        # Lista de enemigos, de momento sólo he metido y colocado el primero
+        # Lista de enemigos, bloques y objetos
         self.enemigos: list = []
         self.bloques: list = []
         self.objetos: list = []
         # Lista de bloues, en el módulo de constantes están los datos para inicializar
         for _ in constantes.POSICION_BLOQUES:
             self.bloques.append(Bloque(*_))
-        # Lista de monedas que que aparecen en el mapa
+        # Mario
         self.mario: Mario = Mario(*constantes.POSICION_INICIAL_M)
-        # atributo que comprueba si mario ha llegado al final
+        # Atributo que comprueba si mario ha llegado al final
         self.final = False
 
+    # MÉTODOS DE MOVIMIENTO
     def move(self):
         """movimiento de la camara. Si mario llega al límite de la pantalla se queda inmovil y se mueve el mapa con
         la misma velocidad"""
@@ -66,6 +69,7 @@ class Tablero:
             self.enemigos.clear()
             self.x = -1792
 
+    # MÉTODOS DE CONTROL
     def finalNivel(self):
         """Función que comprueba si se ha llegado al final del nivel"""
         # si llega al final del mapa
@@ -99,7 +103,7 @@ class Tablero:
         """Reinicio del nivel"""
         self.__init__(constantes.WIDTH, constantes.HEIGHT, constantes.VELOCIDAD, constantes.X, self.intentos + 1)
 
-    # == SPAWN Y ELIMINACIÓN DE ENEMIGOS, OBJETOS Y BLOQUES ==
+    # SPAWN ENEMIGOS Y ELIMINACIÓN DE ELEMENTOS AL SALIR DE ESCENA
     def generarEnemigo(self):
         """Función encargada de generar enemigos con un límite de 4 a la vez en la pantalla. Los enemigos se generan
         en un momento aleatorio"""
@@ -222,8 +226,9 @@ class Tablero:
             # Borra el objeto
             self.objetos.remove(objeto)
 
+    # GENERAL
     def update(self):
-        if not self.final and not self.interfaz.total_vidas:
+        if not self.final and not self.interfaz.SinVidas:
             self.finalNivel()
             """Ejecuta todos los métodos en el orden correcto"""
             # Interfaz (tiempo, monedas, vidas...)
@@ -286,8 +291,8 @@ class Tablero:
             pyxel.cls(0)
             pyxel.text(80, 123,
                        "HAS GANADO, ENHORABUENA.\n\nPulsa la tecla R para comenzar de nuevo\n\n Score: " + str(
-                           self.interfaz.valores[0]), 7)
+                           self.interfaz.valores[0]) + "\n\nPulsa la Q para salir", 7)
         if self.interfaz.SinVidas:
             pyxel.cls(0)
-            pyxel.text(80, 123, "GAME OVER\n\n Pulsa la tecla R para comenzar de nuevo." + str(
+            pyxel.text(80, 123, "GAME OVER\n\n Pulsa la tecla R para comenzar de nuevo.\n\nPulsa la Q para salir" + str(
                 self.interfaz.valores[0]), 7)

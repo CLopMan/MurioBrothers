@@ -4,12 +4,20 @@ import constantes
 
 class Enemigo:
     """Enemigos que aparecen a lo largo del nivel"""
-    def __init__(self, x, y, suelo, sprite):
+
+    def __init__(self, x: float, y: float, suelo: int, sprite: tuple):
+        """Inicialización de cada enemigo.
+                @param x: posición en x
+                @param y: posición en y
+                @param suelo: posición limite en y a la que puede caer.
+                @param sprite: dibujo
+                """
         # Posición y velocidad de los enemigos
         self.position: list = [x, y]
         self.velocidad: list = [constantes.VELOCIDAD_ENEMIGOS, 0]
-        # Suelo del enemigo y altura
+        # Suelo del enemigo
         self.suelo: int = suelo
+        # Esta lista sirve para el cálculo del campo suelo
         self.__trues_alturas: list = []
         # Sprite del enemigo
         self.sprite: tuple = sprite
@@ -18,7 +26,7 @@ class Enemigo:
         # Tamaño de enemigos
         self.size = constantes.TAMANNO_ENEMIGOS
 
-    # Properties
+    # PROPERTIES
     @property
     def position(self):
         return self.__position
@@ -46,7 +54,7 @@ class Enemigo:
         if type(valor) == tuple:
             self.__sprite = valor
 
-    # Funciones
+    # MÉTODOS DE MOVIMIENTO
     def cuerpoTierra(self):
         """esta función controla que el enemigo esté pisando el __suelo"""
         # Si el enemigo está por debajo del suelo
@@ -66,17 +74,23 @@ class Enemigo:
         """Cambia el sentido horizontal del movimiento"""
         self.__direccion *= -1
 
-    def move(self, valor):
-        """Movimiento horizontal"""
+    def move(self, valor: float):
+        """Movimiento horizontal
+        @param valor: movimiento que debe hacer extra para que se mueva con el mapa
+        """
         # Se le suma la velocidad del enemigo menos la de la cámara
         self.position[0] += self.__direccion * self.velocidad[0] - valor
 
+    # MÉTODOS DE COLISIÓN
     def clearAlturas(self):
         """Vacía el parámetros de las posibles alturas en las que mario se puede posar"""
         self.__trues_alturas = list()
 
     def colisionBloque(self, boolList: list):
-        """Esta función recibe la lista de booleanos de la función colisión de los bloques y actúa en consecuencia"""
+        """Esta función recibe la lista de booleanos de la función colisión de los bloques y actúa en consecuencia
+        @param boolList: lista de booleanos que representa la posición del enemigo con respecto a un bloque. Además
+        viene con los valores x e y del bloque para establecer la limitación de movimiento y la colisión.
+        """
         # COLISIÓN VERTICAL POR ARRIBA
         # Inmediatamente encima
         if boolList[1] and boolList[2]:
@@ -110,23 +124,27 @@ class Enemigo:
             # Cambia la dirección
             self.cambioDir()
 
+    # MÉTODOS DE SPRITE
     def animacionCaminar(self):
+        """Animación de los gombas y cambio de dirección de los koopa"""
         if self.sprite == constantes.SPRITE_GOOMBA or self.sprite == constantes.SPRITE_GOOMBA_2:
             self.sprite = constantes.SPRITE_GOOMBA
             # Cada periodo de 5 frames cambia de sprite
             if pyxel.frame_count % 10 < 5:
                 self.sprite = constantes.SPRITE_GOOMBA_2
-        if self.sprite == constantes.SPRITE_KOOPA or self.sprite == constantes. SPRITE_KOOPA_2:
+        if self.sprite == constantes.SPRITE_KOOPA or self.sprite == constantes.SPRITE_KOOPA_2:
             # Comprueba la dirección
             if self.__direccion == 1:
                 self.sprite = constantes.SPRITE_KOOPA
             else:
                 self.sprite = constantes.SPRITE_KOOPA_2
 
+    # GENERAL
     def update(self):
         """Update enemigo"""
         self.animacionCaminar()
         self.cuerpoTierra()
+        self.clearAlturas()
 
     def draw(self):
         """Dibujo enemigo"""

@@ -1,11 +1,18 @@
 import pyxel
 import constantes
-from objetos import Objeto
+
 
 class Mario:
     """Personaje principal, conjunto de todos los parámetros necesiarios"""
 
-    def __init__(self, x, y, suelo, size, sprite):
+    def __init__(self, x: float, y: float, suelo: int, size: list, sprite: list):
+        """Inicialización de Mario.
+        @param x: posición en x
+        @param y: posición en y
+        @param suelo: posición limite en y a la que mario puede caer.
+        @param size: tamaño de la hitbox de Mario
+        @param sprite: dibujo de Mario
+        """
         # posición x e y
         self.position: list = [x, y]
         # Suelo de Mario
@@ -61,18 +68,7 @@ class Mario:
         else:
             return constantes.ROZAMIENTO[0]
 
-    # Funciones del movimiento
-
-    def sprint(self):
-        """Disparador de la función __correr"""
-        if self.__en_suelo:
-            self.__correr = True
-
-    def notsprint(self):
-        """Desactivar __correr"""
-        self.__correr = False
-
-    # Métodos para direcciones. Se usan sumas para que puedas pulsar varios botones a la vez y te quedes quieto
+    # MÉTODOS DE DIRECCIÓN. Se usan sumas para que puedas pulsar varios botones a la vez y te quedes quieto
     def direccion_right(self):
         """Cambia la __direccion hacia la derecha"""
         # sprite para frenar
@@ -90,6 +86,16 @@ class Mario:
     def direccion_reset(self):
         """Resetea la dirección a 0"""
         self.__direccion = 0
+
+    # MÉTODOS DE MOVIMIENTO
+    def sprint(self):
+        """Disparador de la función __correr"""
+        if self.__en_suelo:
+            self.__correr = True
+
+    def notsprint(self):
+        """Desactivar __correr"""
+        self.__correr = False
 
     def acelerar(self):
         """Varía la velocidad del jugador hasta un límite de 3px/s en la dirección especificada por el input"""
@@ -157,6 +163,7 @@ class Mario:
             elif self.estado > 0:
                 self.velocidad[1] -= 2.25
 
+    # MÉTODOS DE SPRITE
     def controlSprite(self):
         """Controla el sprite de Mario en función a su estado"""
         if self.estado >= 1:
@@ -200,6 +207,7 @@ class Mario:
         elif not self.__en_suelo:
             self.sprite[2] = 48 * i
 
+    # MÉTODOS DE COLISIONES
     def clearAlturas(self):
         """Vacía el parámetros de las posibles alturas en las que mario se puede posar"""
         self.__trues_alturas.clear()
@@ -207,7 +215,10 @@ class Mario:
     def colisionBloque(self, boolList: list):
         """Esta función recibe la lista de booleanos de la función colisión de los bloques y actúa en consecuencia
         Si ha colisionado por abajo devuelve un booleano que el método interaccionMarioBloque de tablero usará para
-        aplicar las transformaciones adecuadas a los bloques"""
+        aplicar las transformaciones adecuadas a los bloques
+        @param boolList: lista de 4 booleanos que resultan de la función colision2 en bloques y valores x e y de un
+        bloque. Los booleanos indican la posición de Mario con respecto del bloque.
+        """
         # Suelo por defecto
         if self.estado >= 1:
             defecto = 192
@@ -258,7 +269,8 @@ class Mario:
 
     def colisionEntidad(self, other):
         """Función que detecta si Mario ha colisionado con un enemigo, en caso afirmativo comprueba si mario ha
-        colisionado por arriba, aux[0] evalúa si han colisionado, aux[1] evalúa si mario viene de arriba"""
+        colisionado por arriba, aux[0] evalúa si han colisionado, aux[1] evalúa si mario viene de arriba
+        @param other: enemigo y objeto con el que está colisionando"""
         aux = [False, False]
         # Si el sprite de Mario se superpone con otro sprite de enemigo u objeto
         if abs(other.position[0] - self.position[0]) < 16 and (
@@ -272,22 +284,6 @@ class Mario:
         aux = tuple(aux)
         return aux
 
-    def danno(self):
-        """Hace daño a Mario si los frames de inencibilidad son menores a 90"""
-        if self.__frames_desde_colision >= 90:
-            # actualiza el sprite
-            if self.estado >= 1:
-                self.sprite[1] -= 32
-            self.estado -= 1
-            self.__frames_desde_colision = 0
-
-
-    def dannont(self):
-        """Aumenta el estado de Mario, la salud"""
-        self.estado += 1
-        # actualiza el sprite
-        self.sprite[1] += 32
-
     def conteoFramesColision(self):
         """Cuenta los frames desde la última colisión para aplicar una cierta invulnerabilidad a Mario"""
         if self.__frames_desde_colision < 90:
@@ -297,6 +293,23 @@ class Mario:
         """Aplica una pequeña velocidad hacia arriba para dar la ilusión de rebote"""
         self.velocidad[1] = -6
 
+    # VARIACIÓN DE ESTADO DE MARIO (CONVERTIRSE EN SUPER MARIO O PERDER ESE ESTADO)
+    def danno(self):
+        """Hace daño a Mario si los frames de inencibilidad son menores a 90"""
+        if self.__frames_desde_colision >= 90:
+            # actualiza el sprite
+            if self.estado >= 1:
+                self.sprite[1] -= 32
+            self.estado -= 1
+            self.__frames_desde_colision = 0
+
+    def dannont(self):
+        """Aumenta el estado de Mario, la salud"""
+        self.estado += 1
+        # actualiza el sprite
+        self.sprite[1] += 32
+
+    # CONTROL DE LA HITBOX
     def cambiarTamanio(self):
         """Cambia el tamaño de Mario según el estado de Mario"""
         if self.estado == 0:
@@ -304,6 +317,7 @@ class Mario:
         elif self.estado > 0:
             self.size = [16, 32]
 
+    # GENERAL
     def update(self):
         """Ejecuta todas las funciones de mario en el orden adecuado para su funcionamiento"""
         self.acelerar()
@@ -321,4 +335,3 @@ class Mario:
     def draw(self):
         """Dibuja a mario"""
         pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=0)
-

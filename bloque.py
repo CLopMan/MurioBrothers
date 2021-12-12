@@ -9,12 +9,18 @@ class Bloque():
         self.y: int = y
         self.sprite: tuple = sprite
 
-    def move(self, px):
-        """Mueve los bloques con la velocidad de la cámara"""
+    # MOVIMIENTO
+    def move(self, px: int):
+        """Mueve los bloques con la velocidad de la cámara
+        @param px: número de píxeles que se debe mover el bloque
+        """
         self.x -= px
 
+    # CONTROL DE COLISIONES PARA OTROS OBJETOS
     def colision2(self, other):
-        """Función para comprobar la posición de mario o un enemigo con respecto de un bloque"""
+        """Función para comprobar la posición de mario o un enemigo con respecto de un bloque
+        @param other: Mario, enemigo u objeto con el que el bloque evalúa su posición
+        """
         aux = [False, False, False, False, self.y, self.x]
         # Other está a la izquierda
         if self.x - other.position[0] >= other.size[0]:
@@ -32,10 +38,12 @@ class Bloque():
             aux[3] = True
         return aux
 
+    # MÉTODOS DE SPRITE
     def cambioBloqueLiso(self):
         """Cambia el sprite de un bloque"""
         self.sprite = constantes.SPRITE_LISO
 
+    # GENERAL
     def draw(self):
         """Funcion para el dibujo de bloques"""
         pyxel.blt(self.x, self.y, *self.sprite, colkey=2)

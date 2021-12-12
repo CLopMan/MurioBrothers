@@ -3,17 +3,29 @@ import constantes
 
 
 class Objeto:
-    def __init__(self, x, y, sprite, suelo):
+    def __init__(self, x: float, y: float, sprite: tuple, suelo):
+        """Inicialización de objetos
+        @param x: coordenada en x
+        @ param y: coordenada en y
+        @param sprite: dibujo
+        @param suelo: límite en y al que el objeto puede caer
+        """
+        # Posición
         self.position: list = [x, y]
+        # Velocidad
         self.velocidad: list = [constantes.VELOCIDAD_OBJETO, 0]
+        # tamaño de la hitbox
         self.size: list = [16, 16]
+        # sentido del movimiento
         self.__dir: int = 1
-        self.sprite: list = sprite
+        # sprite
+        self.sprite: tuple = sprite
+        # suelo
         self.__suelo: int = suelo
+        # lista de posibles suelos de objeto
         self.__trues_alturas = list()
 
-    # Funciones
-
+    # MÉTODOS DE MOVIMIENTO
     def cuerpoTierra(self):
         """esta función controla que el jugador esté pisando el __suelo"""
         if self.position[1] > self.__suelo:
@@ -28,6 +40,11 @@ class Objeto:
         else:
             self.position[1] = self.__suelo
 
+    def move(self, valor):
+        """Movimiento horizontal"""
+        self.position[0] += self.__dir * self.velocidad[0] - valor
+
+    # MÉTODOS DE COLISIONES
     def clearAlturas(self):
         """Vacía el parámetros de las posibles alturas en las que mario se puede posar"""
         self.__trues_alturas = list()
@@ -69,13 +86,11 @@ class Objeto:
             # Cambia la dirección
             self.__dir *= -1
 
-    def move(self, valor):
-        """Movimiento horizontal"""
-        self.position[0] += self.__dir * self.velocidad[0] - valor
-
+    # GENERAL
     def update(self):
         """Update funciones de los objetos"""
         self.cuerpoTierra()
+        self.clearAlturas()
 
     def draw(self):
         """Dibuja los objeteos"""
