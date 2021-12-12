@@ -12,6 +12,7 @@ from objetos import Objeto
 class Tablero:
     """Este módulo recoge lo que ha de ser colocado en pantalla, así como la interacción entre objetos y la lógica del
     juego"""
+
     def __init__(self, w: int, h: int, velocidad: int, x: float, intentos: int):
         """Función para inicializar el tablero.
         @param w: ancho de la pantalla
@@ -28,7 +29,7 @@ class Tablero:
         # Posición en x de la cámara
         self.x: float = x
         self.velocidad: float = velocidad
-        self.interfaz: Interfaz = Interfaz(0, 500, 0, 1, 1, 3 - intentos)
+        self.interfaz: Interfaz = Interfaz(0, 500, 0, 3 - intentos)
         # Lista de enemigos, de momento sólo he metido y colocado el primero
         self.enemigos: list = []
         self.bloques: list = []
@@ -222,15 +223,11 @@ class Tablero:
             self.objetos.remove(objeto)
 
     def update(self):
-        if not self.final:
+        if not self.final and not self.interfaz.total_vidas:
             self.finalNivel()
             """Ejecuta todos los métodos en el orden correcto"""
             # Interfaz (tiempo, monedas, vidas...)
             self.interfaz.update()
-            # Cierra el juego si mario vidas = 0
-            if self.interfaz.valores[5] == 0:
-                print("Moriste wey")
-                pyxel.quit()
             # Reinicia el nivel si mario muere o si se acaba el tiempo. También se reinicia si mario se cae
             if self.mario.estado <= -1 or self.interfaz.final_timer or self.mario.position[1] >= 255:
                 self.reiniciar()
@@ -252,9 +249,8 @@ class Tablero:
                     # colisión objeto-bloque
                     objeto.colisionBloque(bloque.colision2(objeto))
                     self.borrarObjeto()
-
-            # Update de enemigo (debe ir en un bucle separado porque el anterior hizo todos los cálculos necesarios para el
-            # enemigo: colisiones, __suelo. Esta función ahora se encarga de trabajar con esos datos)
+            # Update de enemigo (debe ir en un bucle separado porque el anterior hizo todos los cálculos necesarios
+            # para el enemigo: colisiones, __suelo. Esta función ahora se encarga de trabajar con esos datos)
             for enemigo in self.enemigos:
                 enemigo.update()
                 self.interaccionMarioEnemigo(enemigo, self.mario.colisionEntidad(enemigo))
@@ -286,6 +282,12 @@ class Tablero:
             # Objetos
             for objeto in self.objetos:
                 objeto.draw()
-        else:
+        elif self.final and self.interfaz.valores[3] > 0:
             pyxel.cls(0)
-            pyxel.text(80, 123, "HAS GANADO, ENHORABUENA.\n\npulsa la tecla R para comenzar de nuevo", 7)
+            pyxel.text(80, 123,
+                       "HAS GANADO, ENHORABUENA.\n\nPulsa la tecla R para comenzar de nuevo\n\n Score: " + str(
+                           self.interfaz.valores[0]), 7)
+        if self.interfaz.total_vidas:
+            pyxel.cls(0)
+            pyxel.text(80, 123, "GAME OVER\n\n Pulsa la tecla R para comenzar de nuevo." + str(
+                self.interfaz.valores[0]), 7)

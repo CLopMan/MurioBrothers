@@ -116,7 +116,12 @@ class Enemigo:
             # Cada periodo de 5 frames cambia de sprite
             if pyxel.frame_count % 10 < 5:
                 self.sprite = constantes.SPRITE_GOOMBA_2
-
+        if self.sprite == constantes.SPRITE_KOOPA or self.sprite == constantes. SPRITE_KOOPA_2:
+            # Comprueba la dirección
+            if self.__direccion == 1:
+                self.sprite = constantes.SPRITE_KOOPA
+            else:
+                self.sprite = constantes.SPRITE_KOOPA_2
     def update(self):
         """Update enemigo"""
         self.animacionCaminar()
@@ -125,7 +130,7 @@ class Enemigo:
     def draw(self):
         """Dibujo enemigo"""
         # corrección de posición para que el dibujo quede bien
-        if self.sprite == constantes.SPRITE_KOOPA:
+        if self.sprite == constantes.SPRITE_KOOPA or self.sprite == constantes.SPRITE_KOOPA_2:
             pyxel.blt(self.position[0], self.position[1] - 8, *self.sprite, colkey=10)
         else:
             pyxel.blt(self.position[0], self.position[1], *self.sprite, colkey=10)
