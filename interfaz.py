@@ -28,7 +28,7 @@ class Interfaz:
         """Suma una vida a mario"""
         self.valores[3] += 1
 
-    def totalVidas(self):
+    def SinlVidas(self):
         """Devuelve un True si al jugador no le quedan más vidas"""
         if self.valores[3] <= 0:
             return True

@@ -287,7 +287,7 @@ class Tablero:
             pyxel.text(80, 123,
                        "HAS GANADO, ENHORABUENA.\n\nPulsa la tecla R para comenzar de nuevo\n\n Score: " + str(
                            self.interfaz.valores[0]), 7)
-        if self.interfaz.total_vidas:
+        if self.interfaz.SinVidas:
             pyxel.cls(0)
             pyxel.text(80, 123, "GAME OVER\n\n Pulsa la tecla R para comenzar de nuevo." + str(
                 self.interfaz.valores[0]), 7)
