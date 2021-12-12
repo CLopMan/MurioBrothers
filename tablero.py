@@ -294,5 +294,4 @@ class Tablero:
                            self.interfaz.valores[0]) + "\n\nPulsa la Q para salir", 7)
         if self.interfaz.SinVidas:
             pyxel.cls(0)
-            pyxel.text(80, 123, "GAME OVER\n\n Pulsa la tecla R para comenzar de nuevo.\n\nPulsa la Q para salir" + str(
-                self.interfaz.valores[0]), 7)
+            pyxel.text(80, 123, "GAME OVER\n\n Pulsa la tecla R para comenzar de nuevo.\n\nPulsa la Q para salir", 7)
