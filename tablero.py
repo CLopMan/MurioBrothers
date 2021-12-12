@@ -61,14 +61,15 @@ class Tablero:
                 objeto.move(moverpx)
         # La cámara deja de moverse
         else:
+            # borramos la lista de enemgios (En el final no puede aparecer ninguno)
+            self.enemigos.clear()
             self.x = -1792
 
     def finalNivel(self):
         """Función que comprueba si se ha llegado al final del nivel"""
         # si llega al final del mapa
         if self.x == -1792 and self.mario.position[0] > 128:
-            # borra la lista de enemigos y cambia el atributo del final
-            self.enemigos.clear()
+            # cambia el atributo del final
             self.final = True
 
     def inputs(self):
