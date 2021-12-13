@@ -13,7 +13,7 @@ class Tablero:
     """Este módulo recoge lo que ha de ser colocado en pantalla, así como la interacción entre objetos y la lógica del
     juego"""
 
-    def __init__(self, w: int, h: int, velocidad: int, x: float, intentos: int):
+    def __init__(self, w: int, h: int, x: float, intentos: int):
         """Función para inicializar el tablero.
         @param w: ancho de la pantalla
         @param h: alto de la pantalla
@@ -28,7 +28,6 @@ class Tablero:
         self.h: int = h
         # Posición y velocidad de la cámara
         self.x: float = x
-        self.velocidad: float = velocidad
 
         # Interfaz
         self.interfaz: Interfaz = Interfaz(0, 500, 0, 3 - intentos)
@@ -122,7 +121,7 @@ class Tablero:
             x = randint(0, 4)
             # Comprobamos que el enemigo no esté dentro de un bloque
             for bloque in self.bloques:
-                while abs(bloque.x - x) < 16 and -16 < bloque.y - y < b[-1]:
+                while abs(bloque.x - x) <= 16 and -16 <= bloque.y - y < b[-1]:
                     x += 16
             # Si hay menos de 4 enemigos en pantalla
             if len(self.enemigos) < 4:

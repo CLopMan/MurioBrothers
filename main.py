@@ -5,7 +5,7 @@ from tablero import Tablero
 import constantes
 
 # Objeto tablero: recoge todas las interacciones entre objetos y la cámara
-tablero = Tablero(constantes.WIDTH, constantes.HEIGHT, constantes.VELOCIDAD, constantes.X, 0)
+tablero = Tablero(constantes.WIDTH, constantes.HEIGHT, constantes.X, 0)
 
 
 def update():
