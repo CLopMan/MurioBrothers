@@ -64,8 +64,6 @@ class Tablero:
                 objeto.move(moverpx)
         # La cámara deja de moverse
         else:
-            # borramos la lista de enemgios (En el final no puede aparecer ninguno)
-            self.enemigos.clear()
             self.x = -1792
 
     # MÉTODOS DE CONTROL
@@ -73,6 +71,8 @@ class Tablero:
         """Función que comprueba si se ha llegado al final del nivel"""
         # si llega al final del mapa
         if self.x == -1792 and self.mario.position[0] > 128:
+            # borramos la lista de enemgios
+            self.enemigos.clear()
             # cambia el atributo del final
             self.final = True
 
@@ -96,21 +96,19 @@ class Tablero:
             self.mario.salto()
         # empezar de nuevo
         if pyxel.btnp(pyxel.KEY_R):
-            self.__init__(constantes.WIDTH, constantes.HEIGHT, constantes.VELOCIDAD, constantes.X, 0)
+            self.__init__(constantes.WIDTH, constantes.HEIGHT, constantes.X, 0)
 
     def reiniciar(self):
         """Reinicio del nivel"""
-        self.__init__(constantes.WIDTH, constantes.HEIGHT, constantes.VELOCIDAD, constantes.X, self.intentos + 1)
+        self.__init__(constantes.WIDTH, constantes.HEIGHT, constantes.X, self.intentos + 1)
 
     # SPAWN ENEMIGOS Y ELIMINACIÓN DE ELEMENTOS AL SALIR DE ESCENA
     def generarEnemigo(self):
         """Función encargada de generar enemigos con un límite de 4 a la vez en la pantalla. Los enemigos se generan
         en un momento aleatorio"""
-        # Se genera una tupla con números primos y un número del 0 al 10
-        primos = (1, 2, 3, 5, 7, 9, 11, 13, 17, 19, 23)
-        i = randint(0, 10)
-        # Si el frmae es divisible entre un número primo
-        if pyxel.frame_count % primos[i] == 0:
+        # momento aleatorio
+        i = randint(1, 192)
+        if pyxel.frame_count % i == 0:
             # Genera un enemigo (25% koopa 75% goomba)
             a = random()
             b = constantes.SPRITE_GOOMBA
@@ -118,7 +116,7 @@ class Tablero:
                 b = constantes.SPRITE_KOOPA
             # Genera una y y una x random
             y = 208
-            x = randint(0, 4)
+            x = 256 + 16 * randint(0, 4)
             # Comprobamos que el enemigo no esté dentro de un bloque
             for bloque in self.bloques:
                 while abs(bloque.x - x) <= 16 and -16 <= bloque.y - y < b[-1]:
@@ -128,11 +126,11 @@ class Tablero:
                 # Generamos el enemigo si no está superpuesto con otro enemigo
                 control = True
                 for enemigo in self.enemigos:
-                    if abs(enemigo.position[0] - x) >= 24:
+                    if abs(enemigo.position[0] - x) <= 32:
                         control = False
                 if control:
                     # Añadir enemigo a la lista con posición fuera de los límites de la cámara hacia la derecha
-                    self.enemigos.append(Enemigo(256 + (16 * x), y, 200, b))
+                    self.enemigos.append(Enemigo(x, y, 200, b))
 
     def borrarEnemigo(self):
         """Función encargada de eliminar un enemigo si este se sale por la izquierda o cae a un barranco"""
